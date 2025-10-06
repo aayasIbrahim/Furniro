@@ -1,4 +1,4 @@
-// components/Footer.tsx
+
 import React from "react";
 import Image from "next/image";
 
@@ -14,7 +14,6 @@ interface LinkColumnProps {
 
 const goldColor = "#B88E2F";
 
-// Reusable Link Column Component
 const LinkColumn: React.FC<LinkColumnProps> = ({ title, links }) => (
   <div className="mb-8 md:mb-0">
     <h4 className="text-sm font-medium text-gray-400 mb-8">{title}</h4>
