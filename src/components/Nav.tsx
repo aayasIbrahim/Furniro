@@ -2,15 +2,23 @@
 import React, { useState } from "react";
 import Image from "next/image";
 import { User, Search, Heart, ShoppingCart, Menu, X } from "lucide-react";
+
 const Nav: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
 
-  const links = ["Home", "Shop", "About", "Contact"];
+  // Updated links with paths
+  const links = [
+    { name: "Home", href: "/" },
+    { name: "Shop", href: "/shop" },
+    { name: "About", href: "/about" },
+    { name: "Contact", href: "/contact" },
+  ];
+
   const icons = [
-    { icon: User, href: "#" },
-    { icon: Search, href: "#" },
-    { icon: Heart, href: "#" },
-    { icon: ShoppingCart, href: "#" },
+    { icon: User, href: "/account" },
+    { icon: Search, href: "/search" },
+    { icon: Heart, href: "/wishlist" },
+    { icon: ShoppingCart, href: "/cart" },
   ];
 
   return (
@@ -26,11 +34,11 @@ const Nav: React.FC = () => {
           <nav className="hidden md:flex space-x-10">
             {links.map((link) => (
               <a
-                key={link}
-                href={link}
+                key={link.name}
+                href={link.href}
                 className="font-sans font-medium text-base leading-none tracking-normal"
               >
-                {link}
+                {link.name}
               </a>
             ))}
           </nav>
@@ -55,11 +63,7 @@ const Nav: React.FC = () => {
               onClick={() => setIsOpen(!isOpen)}
               className="md:hidden text-gray-600 hover:text-gray-900 focus:outline-none"
             >
-              {isOpen ? (
-                <X className="h-6 w-6" />
-              ) : (
-                <Menu className="h-6 w-6" />
-              )}
+              {isOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
             </button>
           </div>
         </div>
@@ -72,12 +76,12 @@ const Nav: React.FC = () => {
             {/* Navigation Links */}
             <ul className="space-y-1">
               {links.map((link) => (
-                <li key={link}>
+                <li key={link.name}>
                   <a
-                    href="#"
+                    href={link.href}
                     className="block text-gray-700 hover:text-gray-900 px-3 py-2 rounded-md text-base font-medium transition duration-150 ease-in-out"
                   >
-                    {link}
+                    {link.name}
                   </a>
                 </li>
               ))}

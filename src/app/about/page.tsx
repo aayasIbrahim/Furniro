@@ -1,12 +1,10 @@
 import BannerSection from "@/components/BannerSection";
 import React from "react";
 
-function ShopPage() {
+export default function Aboutpage() {
   return (
     <>
-      <BannerSection />
+      <BannerSection  />
     </>
   );
 }
-
-export default ShopPage;

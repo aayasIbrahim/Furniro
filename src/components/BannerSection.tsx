@@ -1,58 +1,56 @@
 // components/BannerSection.tsx
+'use client';
 import React from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-
-type Breadcrumb = {
-  name: string;
-  path: string;
-};
+import { usePathname } from 'next/navigation';
 
 type BannerSectionProps = {
   title?: string;
-  breadcrumbs?: Breadcrumb[];
-  backgroundImage?: string; // optional custom background
+  backgroundImage?: string;
 };
 
 const BannerSection: React.FC<BannerSectionProps> = ({
   title = 'Shop',
-  breadcrumbs,
-
+  backgroundImage = '/banner.png',
 }) => {
-  const defaultBreadcrumbs: Breadcrumb[] = [
-    { name: 'Home', path: '/' },
-    { name: 'Shop', path: '/Shop' },
-  ];
+  const pathname = usePathname();
 
-  const itemsToRender = breadcrumbs || defaultBreadcrumbs;
+  // Mapping pathname to display name
+  const pathToName: Record<string, string> = {
+    '/': 'Home',
+    '/shop': 'Shop',
+    '/about': 'About',
+    '/contact': 'Contact',
+  };
+ ////link nia jabe and Tittle e link naam dkhabe
+ 
+  const currentPageName = pathToName[pathname] || title;
 
   return (
     <div className="relative w-full h-64 flex flex-col justify-center items-center p-4 overflow-hidden">
       {/* Background Image */}
       <Image
-        src="/banner.png"
+        src={backgroundImage}
         alt="Banner Background"
         fill
         className="object-cover object-center"
         priority
       />
+
       {/* Content */}
       <div className="relative z-10 flex flex-col items-center">
         <h1 className="font-sans font-medium text-[48px] leading-[100%] tracking-normal">
-          {title}
+          {currentPageName}
         </h1>
 
+        {/* Breadcrumb: only Home > Current Page */}
         <nav className="text-sm text-gray-600 flex flex-wrap justify-center gap-x-2 mt-2 font-sans font-medium text-[16px] leading-[100%] tracking-normal">
-          {itemsToRender.map((item, index) => (
-            <React.Fragment key={item.path || item.name}>
-              <Link href={item.path} className="hover:underline ">
-                {item.name}
-              </Link>
-              {index < itemsToRender.length - 1 && (
-                <span className="text-gray-500 ">&gt;</span>
-              )}
-            </React.Fragment>
-          ))}
+          <Link href="/" className={pathname === '/' ? 'text-blue-600 font-semibold' : 'hover:underline'}>
+            Home
+          </Link>
+          <span className="text-gray-500">&gt;</span>
+          <span className="font-semibold text-gray-800">{currentPageName}</span>
         </nav>
       </div>
     </div>
