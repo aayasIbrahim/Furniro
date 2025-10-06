@@ -1,9 +1,9 @@
-// components/BannerSection.tsx
-'use client';
-import React from 'react';
-import Image from 'next/image';
-import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+
+"use client";
+import React from "react";
+import Image from "next/image";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
 
 type BannerSectionProps = {
   title?: string;
@@ -11,20 +11,19 @@ type BannerSectionProps = {
 };
 
 const BannerSection: React.FC<BannerSectionProps> = ({
-  title = 'Shop',
-  backgroundImage = '/banner.png',
+  title = "Shop",
+  backgroundImage = "/banner.png",
 }) => {
   const pathname = usePathname();
 
   // Mapping pathname to display name
   const pathToName: Record<string, string> = {
-    '/': 'Home',
-    '/shop': 'Shop',
-    '/about': 'About',
-    '/contact': 'Contact',
+    "/": "Home",
+    "/shop": "Shop",
+    "/about": "About",
+    "/contact": "Contact",
   };
- ////link nia jabe and Tittle e link naam dkhabe
- 
+
   const currentPageName = pathToName[pathname] || title;
 
   return (
@@ -46,7 +45,14 @@ const BannerSection: React.FC<BannerSectionProps> = ({
 
         {/* Breadcrumb: only Home > Current Page */}
         <nav className="text-sm text-gray-600 flex flex-wrap justify-center gap-x-2 mt-2 font-sans font-medium text-[16px] leading-[100%] tracking-normal">
-          <Link href="/" className={pathname === '/' ? 'text-blue-600 font-semibold' : 'hover:underline'}>
+          <Link
+            href="/"
+            className={
+              pathname === "/"
+                ? "text-blue-600 font-semibold"
+                : "hover:underline"
+            }
+          >
             Home
           </Link>
           <span className="text-gray-500">&gt;</span>
