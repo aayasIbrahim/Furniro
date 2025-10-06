@@ -7,7 +7,7 @@ const HeroSection = () => {
       {/* Background Image */}
       <div className="absolute inset-0 -z-10">
         <Image
-          src="/Bannar.png"
+          src="/hero.png"
           alt="Hero background"
           fill
           className="object-cover object-center"
@@ -29,13 +29,11 @@ const HeroSection = () => {
             <h1 className="font-poppins font-bold text-[32px] sm:text-[52px] leading-[40px] sm:leading-[65px] tracking-[0px] text-[#B88E2F] mt-2">
               Discover Our New Collection
             </h1>
-
             {/* Description */}
             <p className="font-poppins font-medium text-[14px] sm:text-[18px] leading-[20px] sm:leading-[24px] tracking-[0px] mt-2">
               Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut elit
               tellus, luctus nec ullamcorper mattis.
             </p>
-
             {/* Button */}
             <button className="bg-amber-700 hover:bg-amber-800 text-white font-poppins font-bold text-[14px] sm:text-[16px] leading-[100%] tracking-[0px] uppercase py-3 sm:py-5 px-4 sm:px-6 rounded-md transition duration-300 ease-in-out self-start mt-5">
               BUY NOW

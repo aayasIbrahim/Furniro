@@ -27,7 +27,7 @@ const Nav: React.FC = () => {
             {links.map((link) => (
               <a
                 key={link}
-                href="#"
+                href={link}
                 className="font-sans font-medium text-base leading-none tracking-normal"
               >
                 {link}
