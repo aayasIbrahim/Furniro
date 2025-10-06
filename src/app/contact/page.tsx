@@ -1,12 +1,12 @@
-import BannerSection from '@/components/BannerSection'
 import React from 'react'
+import BannerSection from '@/components/BannerSection'
 
-function ContactPage() {
+function Contactpage() {
   return (
     <>
-    <BannerSection title='Contact'/>
+    <BannerSection/>
     </>
   )
 }
 
-export default ContactPage
+export default Contactpage;

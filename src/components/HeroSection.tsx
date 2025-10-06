@@ -5,7 +5,7 @@ const HeroSection = () => {
   return (
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
       {/* Background Image */}
-      <div className="absolute inset-0 -z-10  h-[310px] sm:h-[710px] ">
+      <div className="absolute inset-0 -z-10  h-[310px] sm:h-[720px] ">
         <Image
           src="/hero.png"
           alt="Hero background"
@@ -16,7 +16,7 @@ const HeroSection = () => {
       </div>
 
       {/* Main Content Area */}
-      <div className="relative w-full container mx-auto flex items-center justify-end h-[600px] sm:h-[650px] md:h-[700px] p-4 sm:p-8">
+      <div className="relative w-full container mx-auto flex items-center justify-end h-[700px] sm:h-[650px] md:h-[700px] p-4 sm:p-8">
         {/* Right Content Card */}
         <div className="bg-yellow-50 rounded-lg max-w-md w-full relative z-10 flex flex-col justify-center shadow-lg">
           <div className="p-6 sm:p-9">

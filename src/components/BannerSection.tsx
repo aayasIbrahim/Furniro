@@ -1,4 +1,3 @@
-
 "use client";
 import React from "react";
 import Image from "next/image";
@@ -16,7 +15,6 @@ const BannerSection: React.FC<BannerSectionProps> = ({
 }) => {
   const pathname = usePathname();
 
-  // Mapping pathname to display name
   const pathToName: Record<string, string> = {
     "/": "Home",
     "/shop": "Shop",
@@ -27,7 +25,7 @@ const BannerSection: React.FC<BannerSectionProps> = ({
   const currentPageName = pathToName[pathname] || title;
 
   return (
-    <div className="relative w-full h-64 flex flex-col justify-center items-center p-4 overflow-hidden">
+    <div className="relative w-full h-[316px] flex flex-col justify-center items-center px-4 sm:px-6 md:px-8 overflow-hidden">
       {/* Background Image */}
       <Image
         src={backgroundImage}
@@ -38,13 +36,13 @@ const BannerSection: React.FC<BannerSectionProps> = ({
       />
 
       {/* Content */}
-      <div className="relative z-10 flex flex-col items-center">
-        <h1 className="font-sans font-medium text-[48px] leading-[100%] tracking-normal">
+      <div className="relative z-10 flex flex-col items-center text-center">
+        <h1 className="font-sans font-medium text-3xl sm:text-4xl leading-[1.1] tracking-normal">
           {currentPageName}
         </h1>
 
-        {/* Breadcrumb: only Home > Current Page */}
-        <nav className="text-sm text-gray-600 flex flex-wrap justify-center gap-x-2 mt-2 font-sans font-medium text-[16px] leading-[100%] tracking-normal">
+        {/* Breadcrumb: Home > Current Page */}
+        <nav className="text-sm sm:text-base text-gray-600 flex flex-wrap justify-center gap-x-2 mt-2 font-sans font-medium leading-[1.1] tracking-normal">
           <Link
             href="/"
             className={
