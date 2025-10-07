@@ -2,13 +2,12 @@ import React from "react";
 import BannerSection from "@/components/BannerSection";
 import FeaturesSection from "@/components/FeaturesSection";
 
-function ShopPage() {
+
+export default function ShopPage() {
   return (
     <>
       <BannerSection />
-      <FeaturesSection/>
+      <FeaturesSection />
     </>
   );
 }
-
-export default ShopPage;

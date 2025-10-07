@@ -8,7 +8,7 @@ type BannerSectionProps = {
   backgroundImage?: string;
 };
 const BannerSection: React.FC<BannerSectionProps> = ({
-  title = "Shop",
+  title = "",
   backgroundImage = "/banner.png",
 }) => {
   const pathname = usePathname();
