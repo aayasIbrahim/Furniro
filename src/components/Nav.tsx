@@ -1,12 +1,12 @@
-"use client"; 
-import React, { useState } from "react";
+"use client";
+import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import { User, Search, Heart, ShoppingCart, Menu, X } from "lucide-react";
 
 const Nav: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const [show, setShow] = useState(true); // Navbar initially show
 
-  // Updated links with paths
   const links = [
     { name: "Home", href: "/" },
     { name: "Shop", href: "/shops" },
@@ -21,8 +21,33 @@ const Nav: React.FC = () => {
     { icon: ShoppingCart, href: "/cart" },
   ];
 
+  useEffect(() => {
+    let lastScroll = 0;
+
+    const handleScroll = () => {
+      const currentScroll = window.scrollY;
+
+      if (currentScroll <= 100) {
+        setShow(true); // Top 100px → always show
+      } else if (currentScroll > lastScroll) {
+        setShow(false); // Scroll down → hide
+      } else if (currentScroll < lastScroll) {
+        setShow(true); // Scroll up → show
+      }
+
+      lastScroll = currentScroll;
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
   return (
-    <header className="bg-white shadow-md">
+    <header
+      className={`fixed top-0 left-0 w-full z-50 backdrop-blur-md bg-white/90 shadow-lg transition-transform duration-300 ${
+        show ? "translate-y-0" : "-translate-y-full"
+      }`}
+    >
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           {/* Logo */}
@@ -36,7 +61,7 @@ const Nav: React.FC = () => {
               <a
                 key={link.name}
                 href={link.href}
-                className="font-sans font-medium text-base leading-none tracking-normal"
+                className="font-sans font-medium text-base text-gray-800 hover:text-gray-900 transition-colors duration-200"
               >
                 {link.name}
               </a>
@@ -45,7 +70,6 @@ const Nav: React.FC = () => {
 
           {/* Icons & Mobile Menu Button */}
           <div className="flex items-center space-x-4 md:space-x-6">
-            {/* Icons */}
             <div className="hidden md:flex items-center space-x-6">
               {icons.map(({ icon: IconComponent, href }, index) => (
                 <a
@@ -58,7 +82,6 @@ const Nav: React.FC = () => {
               ))}
             </div>
 
-            {/* Mobile Menu Button */}
             <button
               onClick={() => setIsOpen(!isOpen)}
               className="md:hidden text-gray-600 hover:text-gray-900 focus:outline-none"
@@ -73,7 +96,6 @@ const Nav: React.FC = () => {
       {isOpen && (
         <nav className="md:hidden bg-white shadow-md">
           <div className="px-4 pt-2 pb-4">
-            {/* Navigation Links */}
             <ul className="space-y-1">
               {links.map((link) => (
                 <li key={link.name}>
@@ -87,7 +109,6 @@ const Nav: React.FC = () => {
               ))}
             </ul>
 
-            {/* Social / Action Icons */}
             <ul className="flex justify-evenly items-center space-x-4 mt-4">
               {icons.map(({ icon: IconComponent, href }, index) => (
                 <li key={index}>
