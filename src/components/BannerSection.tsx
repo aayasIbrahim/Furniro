@@ -15,7 +15,7 @@ const BannerSection: React.FC<BannerSectionProps> = ({
 
   const pathToName: Record<string, string> = {
     "/": "Home",
-    "/shop": "Shop",
+    "/shops": "Shop",
     "/about": "About",
     "/contact": "Contact",
   };
