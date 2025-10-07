@@ -29,7 +29,7 @@ const BrowseTheRangeComponent: React.FC = () => {
   ];
 
   return (
-    <section className="container mx-auto  bg-white">
+    <section className="container mx-auto  bg-white py-10">
       {/* Section Header */}
       <div className="text-center mb-10 px-4">
         <h2 className="font-poppins font-bold text-[32px] leading-[100%] tracking-[0px]">
