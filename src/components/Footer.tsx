@@ -96,10 +96,8 @@ const Footer: React.FC = () => {
             </form>
           </div>
         </div>
-
         {/* Separator */}
         <div className="border-t border-gray-300 my-8"></div>
-
         {/* Bottom Section */}
         <div className="pt-4 text-center">
           <p className="text-base text-gray-900">

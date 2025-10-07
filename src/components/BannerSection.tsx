@@ -3,12 +3,10 @@ import React from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-
 type BannerSectionProps = {
   title?: string;
   backgroundImage?: string;
 };
-
 const BannerSection: React.FC<BannerSectionProps> = ({
   title = "Shop",
   backgroundImage = "/banner.png",
@@ -21,9 +19,7 @@ const BannerSection: React.FC<BannerSectionProps> = ({
     "/about": "About",
     "/contact": "Contact",
   };
-
   const currentPageName = pathToName[pathname] || title;
-
   return (
     <div className="relative w-full h-[316px] flex flex-col justify-center items-center px-4 sm:px-6 md:px-8 overflow-hidden">
       {/* Background Image */}
@@ -60,5 +56,4 @@ const BannerSection: React.FC<BannerSectionProps> = ({
     </div>
   );
 };
-
 export default BannerSection;
