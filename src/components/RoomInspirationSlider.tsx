@@ -3,27 +3,23 @@ import React from "react";
 import Image from "next/image";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation, Pagination, Autoplay } from "swiper/modules"; 
-
 import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
-
 import { ArrowLeft, ArrowRight } from "lucide-react";
-
 const slides = [
   { id: 1, tag: "01 — Bed Room", title: "Inner Peace", imageUrl: "/Products/image 7.png", alt: "Stylish bedroom" },
   { id: 2, tag: "02 — Living Room", title: "Cozy Corner", imageUrl: "/Products/image 2.png", alt: "Modern living room" },
   { id: 3, tag: "03 — Dining Room", title: "Family Gathering", imageUrl: "/Products/image 1.png", alt: "Elegant dining room" },
   { id: 4, tag: "04 — Work Space", title: "Productive Nook", imageUrl: "/Products/image 4.png", alt: "Minimalist office" },
 ];
-
 const RoomInspirationSlider = () => {
   return (
     <section className="bg-[#FFF3E3] py-20 relative overflow-hidden">
       <div className="container mx-auto px-6 lg:px-12 flex flex-col lg:flex-row items-center gap-16">
         {/* LEFT CONTENT */}
         <div className="flex-1 flex flex-col justify-center text-center lg:text-left space-y-6">
-          <h2 className="font-poppins font-bold text-[36px] md:text-[44px] leading-[120%] text-gray-800 max-w-md mx-auto lg:mx-0">
+          <h2 className="font-poppins font-bold text-[40px] leading-[120%] tracking-[0%]">
             50+ Beautiful Rooms Inspiration
           </h2>
           <p className="font-poppins text-[18px] text-gray-600 max-w-md mx-auto lg:mx-0">
@@ -33,7 +29,6 @@ const RoomInspirationSlider = () => {
             Explore More
           </button>
         </div>
-
         {/* RIGHT SLIDER */}
         <div className="flex-1 relative w-full">
           <Swiper
@@ -83,5 +78,4 @@ const RoomInspirationSlider = () => {
     </section>
   );
 };
-
 export default RoomInspirationSlider;
