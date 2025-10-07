@@ -38,7 +38,7 @@ const Footer: React.FC = () => {
       title: "Links",
       links: [
         { name: "Home", href: "/" },
-        { name: "Shop", href: "shop" },
+        { name: "Shop", href: "/shops" },
         { name: "About", href: "/about" },
         { name: "Contact", href: "/contact" },
       ],

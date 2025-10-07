@@ -9,7 +9,7 @@ type BannerSectionProps = {
 };
 const BannerSection: React.FC<BannerSectionProps> = ({
   title = "",
-  backgroundImage = "/banner.png",
+  backgroundImage = "/bannar/banner.png",
 }) => {
   const pathname = usePathname();
 
@@ -18,6 +18,7 @@ const BannerSection: React.FC<BannerSectionProps> = ({
     "/shops": "Shop",
     "/about": "About",
     "/contact": "Contact",
+    "/cart": "Cart",
   };
   const currentPageName = pathToName[pathname] || title;
   return (
@@ -32,25 +33,27 @@ const BannerSection: React.FC<BannerSectionProps> = ({
       />
 
       {/* Content */}
-      <div className="relative z-10 flex flex-col items-center text-center">
+      <div className="relative z-10 flex flex-col items-center text-center space-y-2 ">
+        <Image src="/bannar/bannarlogo.png" alt="logo" width={77} height={77} />
+
         <h1 className="font-sans font-medium text-3xl sm:text-4xl leading-[1.1] tracking-normal">
           {currentPageName}
         </h1>
 
         {/* Breadcrumb: Home > Current Page */}
-        <nav className="text-sm sm:text-base text-gray-600 flex flex-wrap justify-center gap-x-2 mt-2 font-sans font-medium leading-[1.1] tracking-normal">
+        <nav className="font-medium text-base leading-[100%] tracking-[0%] font-poppins flex space-x-2">
           <Link
             href="/"
             className={
-              pathname === "/"
-                ? "text-blue-600 font-semibold"
-                : "hover:underline"
+              pathname === "/" ? "text-black font-bold" : "hover:underline"
             }
           >
             Home
           </Link>
-          <span className="text-gray-500">&gt;</span>
-          <span className="font-semibold text-gray-800">{currentPageName}</span>
+          <span className="font-bold ">&gt;</span>
+          <span className="font-poppins font-light text-base leading-none tracking-normal text-gray-600">
+            {currentPageName}
+          </span>
         </nav>
       </div>
     </div>
