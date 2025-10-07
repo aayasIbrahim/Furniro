@@ -10,7 +10,6 @@ const ContactSection = () => {
     message: "",
   });
 
-  // Handle input/textarea change
   const handleChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
     setFormData((prevData) => ({
@@ -19,7 +18,6 @@ const ContactSection = () => {
     }));
   };
 
-  // Handle form submission
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     console.log("Form submitted:", formData);
