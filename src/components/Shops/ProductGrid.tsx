@@ -1,8 +1,12 @@
 "use client";
 import React from "react";
+import { useState } from "react";
+import Pagination from "../ul/Paginataion";
 import ProductCard from "../ul/ProductCard";
 
 const ProductGrid = () => {
+  const [page, setPage] = useState(1);
+  const total = 5;
   const products = [
     {
       id: 1,
@@ -151,9 +155,11 @@ const ProductGrid = () => {
 
       {/* Show More Button */}
       <div className="text-center mt-16">
-        {/* <button className=" text-[#B88E2F] font-semibold px-10 py-4 border border-[#B88E2F] rounded-lg  hover:shadow-md">
-          Show More
-        </button> */}
+        <Pagination
+          currentPage={page}
+          totalPages={total}
+          onPageChange={setPage}
+        />
       </div>
     </section>
   );

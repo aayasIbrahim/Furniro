@@ -1,6 +1,7 @@
 "use client";
 import React from "react";
 import Image from "next/image";
+import Link from "next/link";
 import { Share2, Scale, Heart } from "lucide-react";
 
 type Product = {
@@ -46,9 +47,9 @@ const ProductCard: React.FC<{ product: Product }> = ({ product }) => {
 
         {/* Hover Overlay */}
         <div className="absolute inset-0 bg-black/50 flex flex-col items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-          <button className="bg-white text-[#B88E2F] font-semibold px-8 py-3 rounded-md mb-4 hover:bg-purple-50 transition-all duration-200">
+          <Link href="/cart" className="bg-white text-[#B88E2F] font-semibold px-8 py-3 rounded-md mb-4 hover:bg-purple-50 transition-all duration-200">
             Add to cart
-          </button>
+          </Link>
           <div className="flex space-x-5 text-white text-[16px]">
             <button className="flex items-center hover:text-[#B88E2F] transition">
               <Share2 size={16} className="mr-2" /> Share
