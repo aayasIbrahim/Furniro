@@ -1,13 +1,13 @@
 import React from "react";
 import BannerSection from "@/components/ul/BannerSection";
 import FeaturesSection from "@/components/ul/FeaturesSection";
-import ProductCatalog from "@/components/home/ProductCatalog";
+import ProductGrid from "@/components/Shops/ProductGrid";
 
 export default function ShopPage() {
   return (
     <>
       <BannerSection />
-      <ProductCatalog />
+      <ProductGrid/>
       <FeaturesSection />
     </>
   );
