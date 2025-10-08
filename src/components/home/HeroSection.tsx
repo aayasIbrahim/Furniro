@@ -1,4 +1,4 @@
-// components/HeroSection.jsx
+
 import Image from "next/image";
 
 const HeroSection = () => {

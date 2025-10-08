@@ -1,14 +1,14 @@
-import React from 'react'
-import BannerSection from '@/components/BannerSection'
-import FeaturesSection from '@/components/FeaturesSection'
+import React from "react";
+import BannerSection from "@/components/ul/BannerSection";
+import FeaturesSection from "@/components/ul/FeaturesSection";
 
 function Cartpage() {
   return (
-  <>
-  <BannerSection/>
-  <FeaturesSection/>
-  </>
-  )
+    <>
+      <BannerSection />
+      <FeaturesSection />
+    </>
+  );
 }
 
-export default Cartpage
+export default Cartpage;

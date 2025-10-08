@@ -1,7 +1,7 @@
 "use client";
 import React from "react";
-import ProductCard from "./ProductCard";
-import Button from "./Button";
+import ProductCard from "../ul/ProductCard";
+import Button from "../ul/Button";
 
 const ProductCatalog = () => {
   const products = [
