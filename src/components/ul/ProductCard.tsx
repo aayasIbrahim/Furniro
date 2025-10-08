@@ -18,8 +18,6 @@ type Product = {
 
 const ProductCard: React.FC<{ product: Product }> = ({ product }) => {
   const router = useRouter();
-
-
   return (
     <div className={`group relative bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 ${product.isFeatured ? "border-2 border-purple-600" : "border border-gray-100"}`}>
       

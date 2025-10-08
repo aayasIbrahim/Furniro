@@ -1,6 +1,7 @@
 "use client";
 import React from "react";
 import Image from "next/image";
+import ProductDetail from "@/components/products/ProductsDetails";
 
 const products = [
   {
@@ -189,6 +190,7 @@ const ProductPage = ({ params }: Props) => {
           </button>
         </div>
       </div>
+      <ProductDetail />
     </div>
   );
 };
