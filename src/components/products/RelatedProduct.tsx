@@ -43,19 +43,22 @@ function RelatedProduct() {
 
   return (
     <section className="py-16 ">
-      <div className="container mx-auto px-6">
-        <h1 className="text-3xl font-semibold text-center mb-10">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        {/* Title */}
+        <h1 className="text-2xl sm:text-3xl font-semibold text-center mb-10 text-gray-800">
           Related Products
         </h1>
 
         {/* Product Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-6 sm:gap-8">
           {products.map((product) => (
             <ProductCard key={product.id} product={product} />
           ))}
         </div>
-        <div className="text-center mt-[100px]">
-          <Button text="see more" />
+
+        {/* See More Button */}
+        <div className="flex justify-center mt-14">
+          <Button text="See More" />
         </div>
       </div>
     </section>
