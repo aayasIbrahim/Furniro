@@ -1,6 +1,7 @@
 "use client";
 import React from "react";
 import ProductCard from "./ProductCard";
+import Button from "./Button";
 
 const ProductCatalog = () => {
   const products = [
@@ -80,7 +81,6 @@ const ProductCatalog = () => {
         <h2 className="font-poppins font-bold text-[40px] leading-[100%] text-gray-800 mb-3">
           Our Products
         </h2>
-       
       </div>
 
       {/* Product Grid */}
@@ -92,13 +92,18 @@ const ProductCatalog = () => {
 
       {/* Show More Button */}
       <div className="text-center mt-16">
-        <button className=" text-[#B88E2F] font-semibold px-10 py-4 border border-[#B88E2F] rounded-lg  hover:shadow-md">
+        {/* <button className=" text-[#B88E2F] font-semibold px-10 py-4 border border-[#B88E2F] rounded-lg  hover:shadow-md">
           Show More
-        </button>
+        </button> */}
+        <Button
+          text="See More"
+          variant="solid"
+          className="bg-black hover:bg-white"
+          onClick={() => alert("Clicked!")}
+        />
       </div>
     </section>
   );
 };
-
 
 export default ProductCatalog;

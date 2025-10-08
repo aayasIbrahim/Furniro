@@ -79,7 +79,7 @@ const AboutContent = () => {
         <p className="text-gray-700 mb-8">Discover our full range of furniture and bring style & comfort home.</p>
         <a
           href="/shop"
-          className="bg-gray-800 text-white px-8 py-3 rounded-full font-medium hover:bg-gray-700 transition"
+          className="bg-orange-100 text-black px-8 py-3 rounded-full font-medium hover:bg-orange-50 transition"
         >
           Shop Now
         </a>
