@@ -2,6 +2,7 @@
 import React from "react";
 import Image from "next/image";
 import ProductDetail from "@/components/products/ProductsDetails";
+import RelatedProduct from "@/components/products/RelatedProduct";
 
 const products = [
   {
@@ -191,6 +192,7 @@ const ProductPage = ({ params }: Props) => {
         </div>
       </div>
       <ProductDetail />
+      <RelatedProduct/>
     </div>
   );
 };
