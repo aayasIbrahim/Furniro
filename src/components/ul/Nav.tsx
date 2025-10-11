@@ -14,6 +14,7 @@ const Nav: React.FC = () => {
     { name: "Shop", href: "/shops" },
     { name: "About", href: "/about" },
     { name: "Contact", href: "/contact" },
+    { name: "Admin", href: "/admin" },
   ];
 
   const icons = [

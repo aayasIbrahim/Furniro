@@ -2,7 +2,6 @@
 import React from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import { addToCart } from "@/app/redux/carts/cartSlice";
 import { Share2, Scale, Heart } from "lucide-react";
 
@@ -15,12 +14,12 @@ type Product = {
   imageUrl: string;
   badge?: string | null;
   isFeatured?: boolean;
-  size: DEFAULT_SIZE; // required
-  color: DEFAULT_COLOR; // required
+  size: string; // required
+  color:string ; // required
 };
 
 const ProductCard: React.FC<{ product: Product }> = ({ product }) => {
-  const router = useRouter();
+
   return (
     <div
       className={`group relative bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 ${
@@ -53,15 +52,12 @@ const ProductCard: React.FC<{ product: Product }> = ({ product }) => {
 
         {/* Hover Overlay */}
         <div className="absolute inset-0 bg-black/50 flex flex-col items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-          <button
-            onClick={() => {
-              router.push("/cart");
-              addToCart(product);
-            }}
+          <Link
+            href={`/products/${product.id}`}
             className="bg-white text-[#B88E2F] font-semibold px-8 py-3 rounded-md mb-4 hover:bg-purple-50 transition-all duration-200"
           >
             Add to cart
-          </button>
+          </Link>
 
           <div className="flex space-x-5 text-white text-[16px]">
             <button className="flex items-center hover:text-[#B88E2F] transition">

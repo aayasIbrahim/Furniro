@@ -4,7 +4,7 @@ import Image from "next/image";
 import ProductDetail from "@/components/products/ProductsDetails";
 import RelatedProduct from "@/components/products/RelatedProduct";
 import { useDispatch, useSelector } from "react-redux";
-import { RootState } from "@/app/store/store"; 
+import { RootState } from "@/app/store/store";
 import {
   addToCart,
   removeFromCart,
@@ -13,8 +13,6 @@ import {
 } from "@/app/redux/carts/cartSlice";
 import Button from "@/components/ul/Button";
 import CartDrawer from "@/components/products/CartDrawer";
-
-
 
 // 🛍️ Product Data
 const products = [
@@ -106,7 +104,8 @@ const ProductPage = ({ params }: Props) => {
   const [selectedSize, setSelectedSize] = useState<string>("M");
   const [selectedColor, setSelectedColor] = useState<string>("Black");
 
-  if (!product) return <div className="text-center py-20">Product not found!</div>;
+  if (!product)
+    return <div className="text-center py-20">Product not found!</div>;
 
   // Check if product is already in cart
   const existingCartItem = cartItems.find((item) => item.id === product.id);
@@ -132,8 +131,10 @@ const ProductPage = ({ params }: Props) => {
     handleOpenCart();
   };
 
-  const handleIncrement = () => existingCartItem && dispatch(incrementQuantity(product.id));
-  const handleDecrement = () => existingCartItem && dispatch(decrementQuantity(product.id));
+  const handleIncrement = () =>
+    existingCartItem && dispatch(incrementQuantity(product.id));
+  const handleDecrement = () =>
+    existingCartItem && dispatch(decrementQuantity(product.id));
   const handleRemoveItem = (id: number) => dispatch(removeFromCart(id));
 
   return (
@@ -231,6 +232,14 @@ const ProductPage = ({ params }: Props) => {
           {/* 🛒 Add to Cart */}
           <div className="flex flex-col sm:flex-row gap-4 mt-6">
             <div className="flex items-center justify-center sm:justify-start gap-3">
+              <Button
+                onClick={() => {
+                  handleAddToCart();
+                  handleOpenCart();
+                }}
+                className="text-black px-6 py-2 rounded border border-[#B88E2F] hover:bg-[#B88E2F] hover:text-white transition"
+                text="Add to Cart"
+              />
               <div className="flex items-center border border-[#B88E2F] rounded font-semibold px-4 sm:px-6 py-1 transition-all duration-200">
                 <button
                   onClick={handleDecrement}
@@ -248,14 +257,6 @@ const ProductPage = ({ params }: Props) => {
               </div>
             </div>
 
-            <Button
-              onClick={() => {
-                handleAddToCart();
-                handleOpenCart();
-              }}
-              className="text-black px-6 py-2 rounded border border-[#B88E2F] hover:bg-[#B88E2F] hover:text-white transition"
-              text="Add to Cart"
-            />
             <Button
               className="text-black px-6 py-2 rounded border border-[#B88E2F] hover:bg-[#B88E2F] hover:text-white transition"
               text="+ Compare"
