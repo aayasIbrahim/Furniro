@@ -4,10 +4,12 @@ import Image from "next/image";
 import { User, Search, Heart, ShoppingCart, Menu, X } from "lucide-react";
 import { RootState } from "@/app/store/store";
 import { useSelector } from "react-redux";
+import AccountDrawer from "./AccountDrawer";
 
 const Nav: React.FC = () => {
-  const [isOpen, setIsOpen] = useState(false);
-  const [show, setShow] = useState(true); // Navbar initially show
+  const [isOpen, setIsOpen] = useState(false); // Mobile menu
+  const [show, setShow] = useState(true); // Navbar show/hide
+  const [drawerOpen, setDrawerOpen] = useState(false); // Account drawer
 
   const links = [
     { name: "Home", href: "/" },
@@ -18,30 +20,26 @@ const Nav: React.FC = () => {
   ];
 
   const icons = [
-    { icon: User, href: "/account" },
+    { icon: User, isAccount: true },
     { icon: Search, href: "/search" },
     { icon: Heart, href: "/wishlist" },
     { icon: ShoppingCart, href: "/cart", isCart: true },
   ];
 
-  // Redux: Get total cart quantity
   const totalQuantity = useSelector(
     (state: RootState) => state.carts.totalQuantity
   );
 
+  // Navbar hide on scroll down
   useEffect(() => {
     let lastScroll = 0;
-
     const handleScroll = () => {
       const currentScroll = window.scrollY;
-
       if (currentScroll <= 100) setShow(true);
       else if (currentScroll > lastScroll) setShow(false);
       else if (currentScroll < lastScroll) setShow(true);
-
       lastScroll = currentScroll;
     };
-
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
@@ -72,24 +70,40 @@ const Nav: React.FC = () => {
             ))}
           </nav>
 
-          {/* Icons & Mobile Menu Button */}
-          <div className="flex items-center space-x-4 md:space-x-6">
+          {/* Icons + Mobile Menu Button */}
+          <div className="flex items-center space-x-4">
+            {/* Icons for Desktop */}
             <div className="hidden md:flex items-center space-x-6">
-              {icons.map(({ icon: IconComponent, href, isCart }, index) => (
-                <a key={index} href={href} className="relative text-gray-600 hover:text-gray-900 transition duration-150 ease-in-out">
-                  <IconComponent className="h-6 w-6" />
+              {icons.map(({ icon: IconComponent, href, isCart, isAccount }, index) => (
+                <div key={index} className="relative">
+                  {isAccount ? (
+                    <button
+                      onClick={() => setDrawerOpen(true)}
+                      className="text-gray-700 hover:text-gray-900 transition duration-150 ease-in-out"
+                    >
+                      <IconComponent className="h-6 w-6" />
+                    </button>
+                  ) : (
+                    <a
+                      href={href}
+                      className="text-gray-700 hover:text-gray-900 transition duration-150 ease-in-out"
+                    >
+                      <IconComponent className="h-6 w-6" />
+                    </a>
+                  )}
                   {isCart && totalQuantity > 0 && (
                     <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs w-5 h-5 rounded-full flex items-center justify-center font-semibold">
                       {totalQuantity}
                     </span>
                   )}
-                </a>
+                </div>
               ))}
             </div>
 
+            {/* Mobile Menu Button */}
             <button
               onClick={() => setIsOpen(!isOpen)}
-              className="md:hidden text-gray-600 hover:text-gray-900 focus:outline-none"
+              className="md:hidden text-gray-700 hover:text-gray-900 focus:outline-none"
             >
               {isOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
             </button>
@@ -100,7 +114,8 @@ const Nav: React.FC = () => {
       {/* Mobile Menu */}
       {isOpen && (
         <nav className="md:hidden bg-white shadow-md">
-          <div className="px-4 pt-2 pb-4">
+          <div className="px-4 pt-2 pb-4 space-y-4">
+            {/* Links */}
             <ul className="space-y-1">
               {links.map((link) => (
                 <li key={link.name}>
@@ -114,15 +129,25 @@ const Nav: React.FC = () => {
               ))}
             </ul>
 
-            <ul className="flex justify-evenly items-center space-x-4 mt-4">
-              {icons.map(({ icon: IconComponent, href, isCart }, index) => (
+            {/* Icons below links */}
+            <ul className="flex justify-start items-center space-x-4 mt-2">
+              {icons.map(({ icon: IconComponent, href, isCart, isAccount }, index) => (
                 <li key={index} className="relative">
-                  <a
-                    href={href}
-                    className="text-gray-600 hover:text-gray-900 transition duration-150 ease-in-out"
-                  >
-                    <IconComponent className="h-6 w-6" />
-                  </a>
+                  {isAccount ? (
+                    <button
+                      onClick={() => setDrawerOpen(true)}
+                      className="text-gray-700 hover:text-gray-900 transition duration-150 ease-in-out"
+                    >
+                      <IconComponent className="h-6 w-6" />
+                    </button>
+                  ) : (
+                    <a
+                      href={href}
+                      className="text-gray-700 hover:text-gray-900 transition duration-150 ease-in-out"
+                    >
+                      <IconComponent className="h-6 w-6" />
+                    </a>
+                  )}
                   {isCart && totalQuantity > 0 && (
                     <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs w-4 h-4 rounded-full flex items-center justify-center font-semibold">
                       {totalQuantity}
@@ -134,6 +159,9 @@ const Nav: React.FC = () => {
           </div>
         </nav>
       )}
+
+      {/* Account Drawer */}
+      <AccountDrawer drawerOpen={drawerOpen} setDrawerOpen={setDrawerOpen} />
     </header>
   );
 };
