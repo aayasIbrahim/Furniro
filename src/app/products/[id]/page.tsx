@@ -3,9 +3,16 @@ import React, { useState } from "react";
 import Image from "next/image";
 import ProductDetail from "@/components/products/ProductsDetails";
 import RelatedProduct from "@/components/products/RelatedProduct";
-import { useDispatch } from "react-redux";
-import { addToCart } from "@/app/redux/carts/cartSlice";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  addToCart,
+  removeFromCart,
+  incrementQuantity,
+  decrementQuantity,
+} from "@/app/redux/carts/cartSlice";
 import Button from "@/components/ul/Button";
+import CartDrawer from "@/components/products/CartDrawer";
+
 
 // 🛍️ Product Data
 const products = [
@@ -84,33 +91,48 @@ type Props = {
 };
 
 const ProductPage = ({ params }: Props) => {
-  const id = params.id;
-  const product = products.find((p) => p.id === Number(id));
   const dispatch = useDispatch();
+  const { id } = params;
 
-  // 🧩 State for size, color, and quantity
+  const [isCartOpen, setIsCartOpen] = useState(false);
+  const handleOpenCart = () => setIsCartOpen(true);
+  const handleCloseCart = () => setIsCartOpen(false);
+
+  const product = products.find((p) => p.id === Number(id));
+  const cartItems = useSelector((state: any) => state.carts.items);
+
   const [selectedSize, setSelectedSize] = useState<string>("M");
   const [selectedColor, setSelectedColor] = useState<string>("Black");
-  const [quantity, setQuantity] = useState<number>(1);
 
-  if (!product) {
-    return <div className="text-center py-20">Product not found!</div>;
-  }
+  if (!product) return <div className="text-center py-20">Product not found!</div>;
 
-  // 🛒 Add to Cart
+  // Check if product is already in cart
+  const existingCartItem = cartItems.find((item: any) => item.id === product.id);
+  const quantity = existingCartItem ? existingCartItem.quantity : 1;
+
+  // Add to cart or increment
   const handleAddToCart = () => {
-    const cartItem = {
-      id: product.id,
-      name: product.name,
-      price: product.price,
-      imageUrl: product.imageUrl,
-      quantity,
-      size: selectedSize,
-      color: selectedColor,
-    };
-    dispatch(addToCart(cartItem));
-    alert(`${product.name} added to cart!`);
+    if (existingCartItem) {
+      dispatch(incrementQuantity(product.id));
+    } else {
+      dispatch(
+        addToCart({
+          id: product.id,
+          name: product.name,
+          price: product.price,
+          imageUrl: product.imageUrl,
+          quantity: 1,
+          size: selectedSize,
+          color: selectedColor,
+        })
+      );
+    }
+    handleOpenCart();
   };
+
+  const handleIncrement = () => existingCartItem && dispatch(incrementQuantity(product.id));
+  const handleDecrement = () => existingCartItem && dispatch(decrementQuantity(product.id));
+  const handleRemoveItem = (id: number) => dispatch(removeFromCart(id));
 
   return (
     <div className="container mx-auto py-10 px-4 sm:px-6 mt-[80px]">
@@ -209,14 +231,14 @@ const ProductPage = ({ params }: Props) => {
             <div className="flex items-center justify-center sm:justify-start gap-3">
               <div className="flex items-center border border-[#B88E2F] rounded font-semibold px-4 sm:px-6 py-1 transition-all duration-200">
                 <button
-                  onClick={() => setQuantity((prev) => Math.max(1, prev - 1))}
+                  onClick={handleDecrement}
                   className="px-3 sm:px-4 py-2 hover:bg-gray-100 text-lg"
                 >
                   -
                 </button>
                 <span className="px-2">{quantity}</span>
                 <button
-                  onClick={() => setQuantity((prev) => prev + 1)}
+                  onClick={handleIncrement}
                   className="px-3 sm:px-4 py-2 hover:bg-gray-100 text-lg"
                 >
                   +
@@ -225,7 +247,10 @@ const ProductPage = ({ params }: Props) => {
             </div>
 
             <Button
-              onClick={handleAddToCart}
+              onClick={() => {
+                handleAddToCart();
+                handleOpenCart();
+              }}
               className="text-black px-6 py-2 rounded border border-[#B88E2F] hover:bg-[#B88E2F] hover:text-white transition"
               text="Add to Cart"
             />
@@ -242,11 +267,20 @@ const ProductPage = ({ params }: Props) => {
         <ProductDetail />
         <RelatedProduct />
       </div>
+
+      {/* 🧺 Cart Drawer */}
+      <CartDrawer
+        isOpen={isCartOpen}
+        onClose={handleCloseCart}
+        cartItems={cartItems}
+        onRemoveItem={handleRemoveItem}
+      />
     </div>
   );
 };
 
 export default ProductPage;
+
 
 // import mongoose from "mongoose";
 
