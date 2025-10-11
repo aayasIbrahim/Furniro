@@ -1,4 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+
 interface CartItem {
   id: number;
   name: string;
@@ -6,7 +7,7 @@ interface CartItem {
   imageUrl: string;
   quantity: number;
   size: string;
-  color: string
+  color: string;
 }
 
 interface CartState {
@@ -21,10 +22,10 @@ const initialState: CartState = {
   totalPrice: 0,
 };
 
-//helper function
+// Helper function to calculate totals
 const calculateTotals = (items: CartItem[]) => {
   const totalQuantity = items.reduce((acc, item) => acc + item.quantity, 0);
-  const totalPrice = items.reduce((acc, item) => acc + item.quantity * item.price, 0);
+  const totalPrice = items.reduce((acc, item) => acc + item.price * item.quantity, 0);
   return { totalQuantity, totalPrice };
 };
 
@@ -32,31 +33,30 @@ const cartSlice = createSlice({
   name: "cart",
   initialState,
   reducers: {
-    addToCart: (state, action: PayloadAction<Omit<CartItem, "quantity">>) => {
+    addToCart: (state, action: PayloadAction<CartItem>) => {
       const existingItem = state.items.find((item) => item.id === action.payload.id);
 
       if (existingItem) {
-        existingItem.quantity += 1;
+        existingItem.quantity += action.payload.quantity; // Add incoming quantity
       } else {
-        state.items.push({ ...action.payload, quantity: 1 });
+        state.items.push({ ...action.payload });
       }
 
       Object.assign(state, calculateTotals(state.items));
-      //Object.assing(target,source)
     },
 
-    removeFromCart: (state, action: PayloadAction<string | number>) => {
+    removeFromCart: (state, action: PayloadAction<number | string>) => {
       state.items = state.items.filter((item) => item.id !== action.payload);
       Object.assign(state, calculateTotals(state.items));
     },
 
-    incrementQuantity: (state, action: PayloadAction<string | number>) => {
+    incrementQuantity: (state, action: PayloadAction<number | string>) => {
       const item = state.items.find((i) => i.id === action.payload);
       if (item) item.quantity += 1;
       Object.assign(state, calculateTotals(state.items));
     },
 
-    decrementQuantity: (state, action: PayloadAction<string | number>) => {
+    decrementQuantity: (state, action: PayloadAction<number | string>) => {
       const item = state.items.find((i) => i.id === action.payload);
       if (item && item.quantity > 1) item.quantity -= 1;
       Object.assign(state, calculateTotals(state.items));
@@ -70,7 +70,12 @@ const cartSlice = createSlice({
   },
 });
 
-export const { addToCart, removeFromCart, incrementQuantity, decrementQuantity, clearCart } =
-  cartSlice.actions;
+export const {
+  addToCart,
+  removeFromCart,
+  incrementQuantity,
+  decrementQuantity,
+  clearCart,
+} = cartSlice.actions;
 
 export default cartSlice.reducer;

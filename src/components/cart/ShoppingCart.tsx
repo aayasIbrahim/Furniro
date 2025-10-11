@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useMemo } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
@@ -10,19 +10,27 @@ import {
   decrementQuantity,
   clearCart,
 } from "@/app/redux/carts/cartSlice";
+import { RootState } from "@/app/store/store";
 
 const ShoppingCart = () => {
   const router = useRouter();
   const dispatch = useDispatch();
 
   // 🛒 Redux cart state
- const cartItems = useSelector((state: any) => state.carts.items);
+  const cartItems = useSelector((state: RootState) => state.carts.items);
+
   const ACCENT_COLOR = "bg-[#B88E2F]";
   const ACCENT_TEXT = "text-[#B88E2F]";
   const BG_LIGHT = "bg-[#FCF8F3]";
 
   const formatPrice = (price: number) =>
     `Rs. ${price.toLocaleString("en-IN", { minimumFractionDigits: 2 })}`;
+
+  // subtotal and total calculation
+  const { subtotal, total } = useMemo(() => {
+    const sub = cartItems.reduce((acc, item) => acc + item.price * item.quantity, 0);
+    return { subtotal: sub, total: sub };
+  }, [cartItems]);
 
   return (
     <div className="p-8 md:p-16 max-w-7xl mx-auto font-sans">
@@ -42,7 +50,7 @@ const ShoppingCart = () => {
             </thead>
             <tbody>
               {cartItems.length > 0 ? (
-                cartItems .map((item) => (
+                cartItems.map((item) => (
                   <tr key={item.id} className="border-b border-gray-200 last:border-b-0">
                     <td className="py-5 pr-4 w-28 relative h-20">
                       <Image
@@ -100,12 +108,12 @@ const ShoppingCart = () => {
 
           <div className="flex justify-between items-center py-3 border-b border-gray-300">
             <span className="text-lg text-gray-600">Subtotal</span>
-            <span className="text-lg text-gray-500 font-medium">sub total</span>
+            <span className="text-lg text-gray-500 font-medium">{formatPrice(subtotal)}</span>
           </div>
 
           <div className="flex justify-between items-center py-3 mt-4">
             <span className="text-xl font-bold text-gray-800">Total</span>
-            <span className={`text-2xl font-bold ${ACCENT_TEXT}`}>total price</span>
+            <span className={`text-2xl font-bold ${ACCENT_TEXT}`}>{formatPrice(total)}</span>
           </div>
 
           <button

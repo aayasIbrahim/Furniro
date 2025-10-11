@@ -2,6 +2,7 @@
 
 import React, { useMemo } from "react";
 import Image from "next/image";
+import Link from "next/link";
 
 // --- Types ---
 type CartItemType = {
@@ -152,9 +153,9 @@ const CartDrawer: React.FC<CartDrawerProps> = ({ isOpen, onClose, cartItems, onR
               <button className="flex-1 px-4 py-2 text-sm font-semibold text-gray-800 border border-gray-400 rounded-lg hover:bg-gray-100 transition duration-150">
                 Cart
               </button>
-              <button className="flex-1 px-4 py-2 text-sm font-semibold text-white bg-yellow-600 rounded-lg shadow-md hover:bg-yellow-700 transition duration-150">
+              <Link href='/checkout' className="flex-1 px-4 py-2 text-sm font-semibold text-white bg-yellow-600 rounded-lg shadow-md hover:bg-yellow-700 transition duration-150">
                 Checkout
-              </button>
+              </Link>
               <button className="flex-1 px-4 py-2 text-sm font-semibold text-gray-800 border border-gray-400 rounded-lg hover:bg-gray-100 transition duration-150 hidden sm:inline-block">
                 Comparison
               </button>

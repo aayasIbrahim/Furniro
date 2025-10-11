@@ -4,6 +4,7 @@ import Image from "next/image";
 import ProductDetail from "@/components/products/ProductsDetails";
 import RelatedProduct from "@/components/products/RelatedProduct";
 import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "@/app/store/store"; 
 import {
   addToCart,
   removeFromCart,
@@ -12,6 +13,7 @@ import {
 } from "@/app/redux/carts/cartSlice";
 import Button from "@/components/ul/Button";
 import CartDrawer from "@/components/products/CartDrawer";
+
 
 
 // 🛍️ Product Data
@@ -99,7 +101,7 @@ const ProductPage = ({ params }: Props) => {
   const handleCloseCart = () => setIsCartOpen(false);
 
   const product = products.find((p) => p.id === Number(id));
-  const cartItems = useSelector((state: any) => state.carts.items);
+  const cartItems = useSelector((state: RootState) => state.carts.items);
 
   const [selectedSize, setSelectedSize] = useState<string>("M");
   const [selectedColor, setSelectedColor] = useState<string>("Black");
@@ -107,7 +109,7 @@ const ProductPage = ({ params }: Props) => {
   if (!product) return <div className="text-center py-20">Product not found!</div>;
 
   // Check if product is already in cart
-  const existingCartItem = cartItems.find((item: any) => item.id === product.id);
+  const existingCartItem = cartItems.find((item) => item.id === product.id);
   const quantity = existingCartItem ? existingCartItem.quantity : 1;
 
   // Add to cart or increment
@@ -280,61 +282,3 @@ const ProductPage = ({ params }: Props) => {
 };
 
 export default ProductPage;
-
-
-// import mongoose from "mongoose";
-
-// const productSchema = new mongoose.Schema(
-//   {
-//     name: { type: String, required: true, trim: true },
-//     slug: { type: String, required: true, unique: true },
-//     description: { type: String },
-//     category: { type: String },
-//     brand: { type: String },
-//     price: { type: Number, required: true },
-//     oldPrice: { type: Number },
-//     discount: { type: Number },
-//     currency: { type: String, default: "BDT" },
-//     stock: { type: Number, default: 0 },
-//     inStock: { type: Boolean, default: true },
-
-//     images: [
-//       {
-//         url: { type: String, required: true },
-//         alt: String,
-//         isPrimary: { type: Boolean, default: false },
-//       },
-//     ],
-
-//     variants: {
-//       colors: [
-//         {
-//           name: String,
-//           hex: String,
-//           image: String,
-//         },
-//       ],
-//       sizes: [String],
-//     },
-
-//     rating: { type: Number, default: 0 },
-//     numReviews: { type: Number, default: 0 },
-//     reviews: [
-//       {
-//         userId: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
-//         name: String,
-//         rating: Number,
-//         comment: String,
-//         createdAt: { type: Date, default: Date.now },
-//       },
-//     ],
-
-//     tags: [String],
-//     badge: String,
-//     isFeatured: { type: Boolean, default: false },
-//   },
-//   { timestamps: true }
-// );
-
-// export default mongoose.models.Product ||
-//   mongoose.model("Product", productSchema);
