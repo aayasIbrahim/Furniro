@@ -2,6 +2,8 @@
 import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import { User, Search, Heart, ShoppingCart, Menu, X } from "lucide-react";
+import { RootState } from "@/app/store/store";
+import { useSelector } from "react-redux";
 
 const Nav: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -18,8 +20,13 @@ const Nav: React.FC = () => {
     { icon: User, href: "/account" },
     { icon: Search, href: "/search" },
     { icon: Heart, href: "/wishlist" },
-    { icon: ShoppingCart, href: "/cart" },
+    { icon: ShoppingCart, href: "/cart", isCart: true },
   ];
+
+  // Redux: Get total cart quantity
+  const totalQuantity = useSelector(
+    (state: RootState) => state.carts.totalQuantity
+  );
 
   useEffect(() => {
     let lastScroll = 0;
@@ -27,13 +34,9 @@ const Nav: React.FC = () => {
     const handleScroll = () => {
       const currentScroll = window.scrollY;
 
-      if (currentScroll <= 100) {
-        setShow(true); // Top 100px → always show
-      } else if (currentScroll > lastScroll) {
-        setShow(false); // Scroll down → hide
-      } else if (currentScroll < lastScroll) {
-        setShow(true); // Scroll up → show
-      }
+      if (currentScroll <= 100) setShow(true);
+      else if (currentScroll > lastScroll) setShow(false);
+      else if (currentScroll < lastScroll) setShow(true);
 
       lastScroll = currentScroll;
     };
@@ -71,13 +74,14 @@ const Nav: React.FC = () => {
           {/* Icons & Mobile Menu Button */}
           <div className="flex items-center space-x-4 md:space-x-6">
             <div className="hidden md:flex items-center space-x-6">
-              {icons.map(({ icon: IconComponent, href }, index) => (
-                <a
-                  key={index}
-                  href={href}
-                  className="text-gray-600 hover:text-gray-900 transition duration-150 ease-in-out"
-                >
+              {icons.map(({ icon: IconComponent, href, isCart }, index) => (
+                <a key={index} href={href} className="relative text-gray-600 hover:text-gray-900 transition duration-150 ease-in-out">
                   <IconComponent className="h-6 w-6" />
+                  {isCart && totalQuantity > 0 && (
+                    <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs w-5 h-5 rounded-full flex items-center justify-center font-semibold">
+                      {totalQuantity}
+                    </span>
+                  )}
                 </a>
               ))}
             </div>
@@ -110,14 +114,19 @@ const Nav: React.FC = () => {
             </ul>
 
             <ul className="flex justify-evenly items-center space-x-4 mt-4">
-              {icons.map(({ icon: IconComponent, href }, index) => (
-                <li key={index}>
+              {icons.map(({ icon: IconComponent, href, isCart }, index) => (
+                <li key={index} className="relative">
                   <a
                     href={href}
                     className="text-gray-600 hover:text-gray-900 transition duration-150 ease-in-out"
                   >
                     <IconComponent className="h-6 w-6" />
                   </a>
+                  {isCart && totalQuantity > 0 && (
+                    <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs w-4 h-4 rounded-full flex items-center justify-center font-semibold">
+                      {totalQuantity}
+                    </span>
+                  )}
                 </li>
               ))}
             </ul>
