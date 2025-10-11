@@ -7,7 +7,19 @@ import ProductCard from "../ul/ProductCard";
 const ProductGrid = () => {
   const [page, setPage] = useState(1);
   const total = 5;
-  const products = [
+  type ProductType = {
+    id: number;
+    name: string;
+    description: string;
+    price: number;
+    oldPrice?: number;
+    imageUrl: string;
+    badge?: string;
+    isFeatured?: boolean;
+    size?: string[]; // optional array of sizes
+    colors?: string[]; // optional array of colors
+  };
+  const products: ProductType[] = [
     {
       id: 1,
       name: "Syltherine",

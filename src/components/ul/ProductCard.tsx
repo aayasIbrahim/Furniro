@@ -2,7 +2,7 @@
 import React from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { addToCart } from "@/app/redux/carts/cartSlice";
+
 import { Share2, Scale, Heart } from "lucide-react";
 
 type Product = {
@@ -10,12 +10,12 @@ type Product = {
   name: string;
   description: string;
   price: number;
-  oldPrice?: number | null;
+  oldPrice?: number;
   imageUrl: string;
-  badge?: string | null;
+  badge?: string;
   isFeatured?: boolean;
-  size: string; // required
-  color:string ; // required
+  size?: string[];    // optional array of sizes
+  colors?: string[];  // optional array of colors
 };
 
 const ProductCard: React.FC<{ product: Product }> = ({ product }) => {

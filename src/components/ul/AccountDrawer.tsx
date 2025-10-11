@@ -23,7 +23,7 @@ const AccountDrawer: React.FC<Props> = ({ drawerOpen, setDrawerOpen }) => {
       />
 
       {/* Drawer */}
-      <div className="fixed top-0 right-0 h-full w-80 bg-orange-100 shadow-lg z-50 p-6">
+      <div className="fixed top-0 right-0 h-full w-80 bg-white md:bg-orange-100 shadow-lg z-50 p-6">
         <div className="flex justify-between items-center mb-4">
           <h2 className="text-lg font-semibold">
             {isRegister ? "Create Account" : "Login"}
