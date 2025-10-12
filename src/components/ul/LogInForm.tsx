@@ -1,12 +1,45 @@
 "use client";
-import React from "react";
+
+import React, { useState } from "react";
+import { signIn } from "next-auth/react";
+
 const LoginForm: React.FC = () => {
+  const [formData, setFormData] = useState({ email: "", password: "" });
+  const [loading, setLoading] = useState(false);
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+
+    const res = await signIn("credentials", {
+      redirect: false,
+      email: formData.email,
+      password: formData.password,
+    });
+
+    setLoading(false);
+
+    if (res?.error) {
+      alert(res.error);
+    } else {
+      alert("✅ Login successful!");
+      // Optional redirect or drawer close logic
+    }
+  };
+
   return (
-    <form className="space-y-4 "> 
+    <form onSubmit={handleSubmit} className="space-y-4">
       <div>
         <label className="block text-sm font-medium">Email</label>
         <input
+          name="email"
           type="email"
+          value={formData.email}
+          onChange={handleChange}
           className="w-full border rounded-md px-3 py-2 mt-1 focus:ring-2 focus:ring-blue-500 outline-none"
           placeholder="Enter your email"
         />
@@ -14,13 +47,20 @@ const LoginForm: React.FC = () => {
       <div>
         <label className="block text-sm font-medium">Password</label>
         <input
+          name="password"
           type="password"
+          value={formData.password}
+          onChange={handleChange}
           className="w-full border rounded-md px-3 py-2 mt-1 focus:ring-2 focus:ring-blue-500 outline-none"
           placeholder="Enter your password"
         />
       </div>
-      <button className="w-full bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700">
-        Login
+      <button
+        disabled={loading}
+        type="submit"
+        className="w-full bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700 disabled:bg-gray-400"
+      >
+        {loading ? "Logging in..." : "Login"}
       </button>
     </form>
   );
