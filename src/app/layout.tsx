@@ -5,12 +5,12 @@ import ProvidersClient from "@/components/ProviderClients";
 import NavbarClient from "@/components/NavClient";
 import FooterClient from "@/components/FooterClient";
 
-// Google Fonts with fallback
+
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
-  display: "swap", // recommended for performance
-  fallback: ["system-ui", "sans-serif"], // fallback fonts
+  display: "swap", 
+  fallback: ["system-ui", "sans-serif"], 
 });
 
 const geistMono = Geist_Mono({
@@ -23,6 +23,9 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "Funiro",
   description: "Developed by CourseFiction",
+  icons:{
+    icon: '/favicon.32x32.png',
+  }
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

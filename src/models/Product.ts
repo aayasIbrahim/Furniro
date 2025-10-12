@@ -11,7 +11,6 @@ export interface IProduct extends Document {
   createdAt?: Date;
   updatedAt?: Date;
 }
-
 const ProductSchema: Schema<IProduct> = new Schema(
   {
     name: {
@@ -44,7 +43,6 @@ const ProductSchema: Schema<IProduct> = new Schema(
   },
   { timestamps: true }
 );
-
 const Product =
   mongoose.models.Product || mongoose.model<IProduct>("Product", ProductSchema);
 
