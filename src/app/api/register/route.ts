@@ -1,46 +1,53 @@
-import { NextResponse } from "next/server";
-import bcrypt from "bcryptjs";
+import connectDB from "@/lib/db";
 import User from "@/models/User";
-import  connectDB  from "@/lib/db";
+import bcrypt from "bcryptjs";
 
 export async function POST(req: Request) {
   try {
-    const { fullName, email, password } = await req.json();
+    await connectDB();
+    const body = (await req.json()) as {
+      fullName: string;
+      email: string;
+      password: string;
+    };
 
-    if (!fullName || !email || !password) {
-      return NextResponse.json(
-        { message: "All fields are required" },
+    // check required fields
+    if (!body.fullName || !body.email || !body.password) {
+      return new Response(
+        JSON.stringify({ message: "All fields are required" }),
         { status: 400 }
       );
     }
 
-    await connectDB();
-
-    const existingUser = await User.findOne({ email });
-    if (existingUser) {
-      return NextResponse.json(
-        { message: "Email already registered" },
-        { status: 409 }
-      );
+    // check if user exists
+    const exists = await User.findOne({ email: body.email });
+    if (exists) {
+      return new Response(JSON.stringify({ message: "User already exists" }), {
+        status: 400,
+      });
     }
 
-    const hashedPassword = await bcrypt.hash(password, 10);
+    // hash password
+    const hashedPassword = await bcrypt.hash(body.password, 10);
 
-    const newUser = await User.create({
-      fullName,
-      email,
+    // new user always gets "user" role by default
+    const user = new User({
+      fullName: body.fullName,
+      email: body.email,
       password: hashedPassword,
+      role: "user", //  Default role
     });
 
-    return NextResponse.json(
-      { message: "User registered successfully", user: newUser },
+    await user.save();
+
+    return new Response(
+      JSON.stringify({ message: "User created successfully" }),
       { status: 201 }
     );
-  } catch (error) {
-    console.error(error);
-    return NextResponse.json(
-      { message: "Internal Server Error" },
-      { status: 500 }
-    );
+  } catch (err) {
+    console.error("Error creating user:", err);
+    return new Response(JSON.stringify({ message: "Internal server error" }), {
+      status: 500,
+    });
   }
 }
