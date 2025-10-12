@@ -1,26 +1,30 @@
 import { withAuth } from "next-auth/middleware";
 
+
 export default withAuth({
+  // Unauthorized users are redirected here
   pages: {
-    signIn: "/login", // unauthorized হলে এখানে redirect করবে
+    signIn: "/", // since login is a drawer on home
   },
   callbacks: {
     authorized: ({ token, req }) => {
-      if (!token) return false;
-
       const { pathname } = req.nextUrl;
 
-      // /admin → শুধু admin + super-admin allowed
+      // Not logged in → redirect to "/"
+      if (!token) return false;
+
+      // Admin routes restriction
       if (pathname.startsWith("/admin")) {
-        return token.role === "admin" || token.role === "super-admin";
+        return token.role === "admin" 
       }
-      return true; // 
+
+      // Allow all other routes
+      return true;
     },
   },
 });
 
 export const config = {
-  matcher: [
-    "/admin/:path*",
-  ], // এই path গুলোর জন্য middleware apply হবে
+  // Apply middleware only to admin routes
+  matcher: ["/admin/:path*"],
 };

@@ -5,20 +5,24 @@ import { User, Search, Heart, ShoppingCart, Menu, X } from "lucide-react";
 import { RootState } from "@/app/store/store";
 import { useSelector } from "react-redux";
 import AccountDrawer from "./AccountDrawer";
+import { useSession } from "next-auth/react";
 
 const Nav: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false); // Mobile menu
   const [show, setShow] = useState(true); // Navbar show/hide
   const [drawerOpen, setDrawerOpen] = useState(false); // Account drawer
-
+  const { data: session } = useSession();
+  console.log("Session in Nav:", session);
+  const role = session?.user?.role;
   const links = [
     { name: "Home", href: "/" },
     { name: "Shop", href: "/shops" },
     { name: "About", href: "/about" },
     { name: "Contact", href: "/contact" },
-    { name: "Admin", href: "/admin" },
   ];
-
+  if (role === "admin") {
+    links.push({ name: "Admin", href: "/admin" });
+  }
   const icons = [
     { icon: User, isAccount: true },
     { icon: Search, href: "/search" },
@@ -74,30 +78,32 @@ const Nav: React.FC = () => {
           <div className="flex items-center space-x-4">
             {/* Icons for Desktop */}
             <div className="hidden md:flex items-center space-x-6">
-              {icons.map(({ icon: IconComponent, href, isCart, isAccount }, index) => (
-                <div key={index} className="relative">
-                  {isAccount ? (
-                    <button
-                      onClick={() => setDrawerOpen(true)}
-                      className="text-gray-700 hover:text-gray-900 transition duration-150 ease-in-out"
-                    >
-                      <IconComponent className="h-6 w-6" />
-                    </button>
-                  ) : (
-                    <a
-                      href={href}
-                      className="text-gray-700 hover:text-gray-900 transition duration-150 ease-in-out"
-                    >
-                      <IconComponent className="h-6 w-6" />
-                    </a>
-                  )}
-                  {isCart && totalQuantity > 0 && (
-                    <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs w-5 h-5 rounded-full flex items-center justify-center font-semibold">
-                      {totalQuantity}
-                    </span>
-                  )}
-                </div>
-              ))}
+              {icons.map(
+                ({ icon: IconComponent, href, isCart, isAccount }, index) => (
+                  <div key={index} className="relative">
+                    {isAccount ? (
+                      <button
+                        onClick={() => setDrawerOpen(true)}
+                        className="text-gray-700 hover:text-gray-900 transition duration-150 ease-in-out"
+                      >
+                        <IconComponent className="h-6 w-6" />
+                      </button>
+                    ) : (
+                      <a
+                        href={href}
+                        className="text-gray-700 hover:text-gray-900 transition duration-150 ease-in-out"
+                      >
+                        <IconComponent className="h-6 w-6" />
+                      </a>
+                    )}
+                    {isCart && totalQuantity > 0 && (
+                      <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs w-5 h-5 rounded-full flex items-center justify-center font-semibold">
+                        {totalQuantity}
+                      </span>
+                    )}
+                  </div>
+                )
+              )}
             </div>
 
             {/* Mobile Menu Button */}
@@ -105,7 +111,11 @@ const Nav: React.FC = () => {
               onClick={() => setIsOpen(!isOpen)}
               className="md:hidden text-gray-700 hover:text-gray-900 focus:outline-none"
             >
-              {isOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+              {isOpen ? (
+                <X className="h-6 w-6" />
+              ) : (
+                <Menu className="h-6 w-6" />
+              )}
             </button>
           </div>
         </div>
@@ -131,30 +141,32 @@ const Nav: React.FC = () => {
 
             {/* Icons below links */}
             <ul className="flex justify-start items-center space-x-4 mt-2">
-              {icons.map(({ icon: IconComponent, href, isCart, isAccount }, index) => (
-                <li key={index} className="relative">
-                  {isAccount ? (
-                    <button
-                      onClick={() => setDrawerOpen(true)}
-                      className="text-gray-700 hover:text-gray-900 transition duration-150 ease-in-out"
-                    >
-                      <IconComponent className="h-6 w-6" />
-                    </button>
-                  ) : (
-                    <a
-                      href={href}
-                      className="text-gray-700 hover:text-gray-900 transition duration-150 ease-in-out"
-                    >
-                      <IconComponent className="h-6 w-6" />
-                    </a>
-                  )}
-                  {isCart && totalQuantity > 0 && (
-                    <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs w-4 h-4 rounded-full flex items-center justify-center font-semibold">
-                      {totalQuantity}
-                    </span>
-                  )}
-                </li>
-              ))}
+              {icons.map(
+                ({ icon: IconComponent, href, isCart, isAccount }, index) => (
+                  <li key={index} className="relative">
+                    {isAccount ? (
+                      <button
+                        onClick={() => setDrawerOpen(true)}
+                        className="text-gray-700 hover:text-gray-900 transition duration-150 ease-in-out"
+                      >
+                        <IconComponent className="h-6 w-6" />
+                      </button>
+                    ) : (
+                      <a
+                        href={href}
+                        className="text-gray-700 hover:text-gray-900 transition duration-150 ease-in-out"
+                      >
+                        <IconComponent className="h-6 w-6" />
+                      </a>
+                    )}
+                    {isCart && totalQuantity > 0 && (
+                      <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs w-4 h-4 rounded-full flex items-center justify-center font-semibold">
+                        {totalQuantity}
+                      </span>
+                    )}
+                  </li>
+                )
+              )}
             </ul>
           </div>
         </nav>

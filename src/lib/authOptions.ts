@@ -29,38 +29,35 @@ declare module "next-auth/jwt" {
     role?: string | null;
   }
 }
-
 export const authOptions: NextAuthOptions = {
   session: { strategy: "jwt" },
+  secret: process.env.NEXTAUTH_SECRET,
   providers: [
     CredentialsProvider({
       name: "Credentials",
       credentials: {
-        email: {
-          label: "Email",
-          type: "email",
-          placeholder: "example@gmail.com",
-        },
+        email: { label: "Email", type: "email" },
         password: { label: "Password", type: "password" },
       },
-      async authorize(credentials) {
-        if (!credentials?.email || !credentials?.password) return null;
-        await connectDB();
-        const user = await User.findOne({ email: credentials.email });
-        if (!user) throw new Error("No user found with this email");
+      authorize: async (credentials) => {
+        try {
+          if (!credentials?.email || !credentials?.password) return null;
+          await connectDB();
+          const user = await User.findOne({ email: credentials.email });
+          if (!user) return null;
+          const isValid = await bcrypt.compare(credentials.password, user.password);
+          if (!isValid) return null;
 
-        const isValid = await bcrypt.compare(
-          credentials.password,
-          user.password
-        );
-        if (!isValid) throw new Error("Invalid password");
-
-        return {
-          id: user._id.toString(),
-          fullName: user.firstName,   //✅ match with your schema
-          email: user.email,
-          role: user.role ?? "user",
-        };
+          return {
+            id: user._id.toString(),
+            fullName: user.fullName ?? "",
+            email: user.email,
+            role: user.role ?? "user",
+          };
+        } catch (err) {
+          console.error("Authorize error:", err);
+          return null;
+        }
       },
     }),
   ],
@@ -69,11 +66,10 @@ export const authOptions: NextAuthOptions = {
       if (user) {
         token.id = user.id;
         token.fullName = user.fullName;
-        token.role = user.role ?? "user";
+        token.role = user.role;
       }
       return token;
     },
-
     async session({ session, token }) {
       if (session.user) {
         session.user.id = token.id as string;
@@ -81,11 +77,10 @@ export const authOptions: NextAuthOptions = {
         session.user.role = token.role ?? "user";
       }
       return session;
+      
     },
+   
   },
-  secret: process.env.NEXTAUTH_SECRET,
-//   pages: {
-//     signIn: "/login",
-//   },
 };
+
 export default NextAuth(authOptions);

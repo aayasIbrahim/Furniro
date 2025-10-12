@@ -37,7 +37,6 @@ export async function POST(req: Request) {
       password: hashedPassword,
       role: "user", //  Default role
     });
-
     await user.save();
 
     return new Response(

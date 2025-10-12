@@ -1,11 +1,17 @@
 "use client";
 
 import React, { useState } from "react";
-import { signIn } from "next-auth/react";
+import { signIn, } from "next-auth/react";
+// import { useRouter } from "next/navigation";
 
-const LoginForm: React.FC = () => {
+interface LoginFormProps {
+  onSuccess?: () => void; // optional callback to close drawer
+}
+
+const LoginForm: React.FC<LoginFormProps> = () => {
   const [formData, setFormData] = useState({ email: "", password: "" });
   const [loading, setLoading] = useState(false);
+  // const router = useRouter();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -23,12 +29,20 @@ const LoginForm: React.FC = () => {
 
     setLoading(false);
 
-    if (res?.error) {
-      alert(res.error);
-    } else {
-      alert("✅ Login successful!");
-      // Optional redirect or drawer close logic
-    }
+    // if (res?.error) {
+    //   alert(res.error);
+    // } else if (res?.ok) {
+    //   // ✅ Role-based redirect after login
+    //   const session = await fetch("/api/auth/session").then((r) => r.json());
+    //   if (session?.user?.role === "admin" || session?.user?.role === "super-admin") {
+    //     router.push("/admin"); // admin dashboard
+    //   } else {
+    //     router.push("/"); // regular user home
+    //   }
+
+    //   // optional drawer close callback
+    //   if (onSuccess) onSuccess();
+    // }
   };
 
   return (
@@ -42,6 +56,7 @@ const LoginForm: React.FC = () => {
           onChange={handleChange}
           className="w-full border rounded-md px-3 py-2 mt-1 focus:ring-2 focus:ring-blue-500 outline-none"
           placeholder="Enter your email"
+          required
         />
       </div>
       <div>
@@ -53,6 +68,7 @@ const LoginForm: React.FC = () => {
           onChange={handleChange}
           className="w-full border rounded-md px-3 py-2 mt-1 focus:ring-2 focus:ring-blue-500 outline-none"
           placeholder="Enter your password"
+          required
         />
       </div>
       <button
