@@ -10,9 +10,12 @@
   },
   "dependencies": {
     "@reduxjs/toolkit": "^2.9.0",
+    "bcryptjs": "^3.0.2",
     "framer-motion": "^12.23.22",
     "lucide-react": "^0.544.0",
+    "mongoose": "^8.19.1",
     "next": "15.5.4",
+    "next-auth": "^4.24.11",
     "react": "19.1.0",
     "react-dom": "19.1.0",
     "react-icon": "^1.0.0",
