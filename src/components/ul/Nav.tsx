@@ -10,11 +10,20 @@ import {
   Menu,
   X,
   LogOut,
+  LucideIcon,
 } from "lucide-react";
 import { useSelector } from "react-redux";
 import { RootState } from "@/app/store/store";
 import AccountDrawer from "./AccountDrawer";
 import { useSession, signOut } from "next-auth/react";
+
+// ✅ Type for each icon item
+interface IconItem {
+  icon: LucideIcon;
+  href?: string;
+  isCart?: boolean;
+  onClick?: () => void;
+}
 
 const Nav: React.FC = () => {
   const { data: session } = useSession();
@@ -38,8 +47,8 @@ const Nav: React.FC = () => {
     ...(isAdmin ? [{ name: "Admin", href: "/admin" }] : []),
   ];
 
-  // 🔘 Navbar Icons
-  const icons = [
+  // 🔘 Navbar Icons (TypeScript-safe)
+  const icons: IconItem[] = [
     !isAdmin
       ? { icon: User, onClick: () => setDrawerOpen(true) }
       : { icon: LogOut, onClick: () => signOut() },
@@ -62,8 +71,8 @@ const Nav: React.FC = () => {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  // 🎨 Icon Renderer
-  const renderIcon = (item: any, index: number) => {
+  // 🎨 Icon Renderer — fully typed now
+  const renderIcon = (item: IconItem, index: number) => {
     const Icon = item.icon;
     const commonProps =
       "text-gray-700 hover:text-gray-900 transition duration-150 ease-in-out";
@@ -136,7 +145,6 @@ const Nav: React.FC = () => {
       {isOpen && (
         <nav className="md:hidden bg-white shadow-md">
           <div className="px-4 pt-2 pb-4 space-y-4">
-            {/* Links */}
             <ul className="space-y-1">
               {links.map((link) => (
                 <li key={link.name}>
@@ -150,7 +158,6 @@ const Nav: React.FC = () => {
               ))}
             </ul>
 
-            {/* Icons */}
             <ul className="flex justify-start items-center space-x-4 mt-2">
               {icons.map(renderIcon)}
             </ul>
@@ -158,7 +165,6 @@ const Nav: React.FC = () => {
         </nav>
       )}
 
-      {/* 🧩 Account Drawer */}
       {!isAdmin && (
         <AccountDrawer drawerOpen={drawerOpen} setDrawerOpen={setDrawerOpen} />
       )}
