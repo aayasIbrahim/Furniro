@@ -36,7 +36,7 @@ const LoginForm: React.FC<LoginFormProps> = ({onSuccess}) => {
       // ✅ Role-based redirect after login
       const session = await fetch("/api/auth/session").then((r) => r.json());
       if (session?.user?.role === "admin" || session?.user?.role === "super-admin") {
-        router.push("/admin"); // admin dashboard
+        router.push("/"); // admin dashboard
       } else {
         router.push("/"); // regular user home
       }
@@ -75,7 +75,7 @@ const LoginForm: React.FC<LoginFormProps> = ({onSuccess}) => {
       <button
         disabled={loading}
         type="submit"
-        className="w-full bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700 disabled:bg-gray-400"
+        className="w-full bg-orange-300 text-white py-2 rounded-md hover:bg-orange-200 disabled:bg-gray-400"
       >
         {loading ? "Logging in..." : "Login"}
       </button>

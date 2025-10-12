@@ -158,7 +158,7 @@ const Nav: React.FC = () => {
               ))}
             </ul>
 
-            <ul className="flex justify-start items-center space-x-4 mt-2">
+            <ul className="flex justify-evenly items-center space-x-4 mt-2">
               {icons.map(renderIcon)}
             </ul>
           </div>

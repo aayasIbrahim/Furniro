@@ -3,6 +3,7 @@
 
 import React from "react";
 import Image from "next/image";
+import Link from "next/link";
 
 const AboutContent = () => {
   const categories = [
@@ -61,11 +62,11 @@ const AboutContent = () => {
               <Image
                 src={cat.image}
                 alt={cat.title}
-                width={400}
-                height={300}
+                width={500}
+                height={400}
                 className="w-full h-64 object-cover transition-transform group-hover:scale-105"
               />
-              <div className="absolute bottom-0 left-0 right-0 bg-black bg-opacity-40 text-white text-center py-2">
+              <div className="absolute bottom-0 left-0 right-0 bg-orange-100 bg-opacity-40 text-black text-center py-2">
                 {cat.title}
               </div>
             </div>
@@ -77,12 +78,12 @@ const AboutContent = () => {
       <section className="bg-gray-100 py-16 text-center px-4">
         <h2 className="text-3xl font-semibold mb-6">Ready to Elevate Your Space?</h2>
         <p className="text-gray-700 mb-8">Discover our full range of furniture and bring style & comfort home.</p>
-        <a
-          href="/shop"
+        <Link
+          href="/shops"
           className="bg-orange-100 text-black px-8 py-3 rounded-full font-medium hover:bg-orange-50 transition"
         >
           Shop Now
-        </a>
+        </Link>
       </section>
     </div>
   );

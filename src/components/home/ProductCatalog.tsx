@@ -1,9 +1,11 @@
 "use client";
 import React from "react";
 import ProductCard from "../ul/ProductCard";
+import { useRouter } from "next/navigation";
 import Button from "../ul/Button";
 
 const ProductCatalog = () => {
+  const router = useRouter();
   const products = [
     {
       id: 1,
@@ -98,8 +100,8 @@ const ProductCatalog = () => {
         <Button
           text="See More"
           variant="solid"
-          className="bg-black hover:bg-white"
-          onClick={() => alert("Clicked!")}
+        
+          onClick={() => router.push("/shops")}
         />
       </div>
     </section>
