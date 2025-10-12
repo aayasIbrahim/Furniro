@@ -2,13 +2,14 @@
 
 import React, { useState } from "react";
 import { signIn, } from "next-auth/react";
-// import { useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 
 interface LoginFormProps {
-  onSuccess?: () => void; // optional callback to close drawer
+  onSuccess?: () => void; 
 }
 
-const LoginForm: React.FC<LoginFormProps> = () => {
+const LoginForm: React.FC<LoginFormProps> = ({onSuccess}) => {
+  const router = useRouter();
   const [formData, setFormData] = useState({ email: "", password: "" });
   const [loading, setLoading] = useState(false);
   // const router = useRouter();
@@ -29,20 +30,20 @@ const LoginForm: React.FC<LoginFormProps> = () => {
 
     setLoading(false);
 
-    // if (res?.error) {
-    //   alert(res.error);
-    // } else if (res?.ok) {
-    //   // ✅ Role-based redirect after login
-    //   const session = await fetch("/api/auth/session").then((r) => r.json());
-    //   if (session?.user?.role === "admin" || session?.user?.role === "super-admin") {
-    //     router.push("/admin"); // admin dashboard
-    //   } else {
-    //     router.push("/"); // regular user home
-    //   }
+    if (res?.error) {
+      alert(res.error);
+    } else if (res?.ok) {
+      // ✅ Role-based redirect after login
+      const session = await fetch("/api/auth/session").then((r) => r.json());
+      if (session?.user?.role === "admin" || session?.user?.role === "super-admin") {
+        router.push("/admin"); // admin dashboard
+      } else {
+        router.push("/"); // regular user home
+      }
 
-    //   // optional drawer close callback
-    //   if (onSuccess) onSuccess();
-    // }
+      // optional drawer close callback
+      if (onSuccess) onSuccess();
+    }
   };
 
   return (

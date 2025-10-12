@@ -1,40 +1,54 @@
 "use client";
+
 import React, { useState, useEffect } from "react";
 import Image from "next/image";
-import { User, Search, Heart, ShoppingCart, Menu, X } from "lucide-react";
-import { RootState } from "@/app/store/store";
+import {
+  User,
+  Search,
+  Heart,
+  ShoppingCart,
+  Menu,
+  X,
+  LogOut,
+} from "lucide-react";
 import { useSelector } from "react-redux";
+import { RootState } from "@/app/store/store";
 import AccountDrawer from "./AccountDrawer";
-import { useSession } from "next-auth/react";
+import { useSession, signOut } from "next-auth/react";
 
 const Nav: React.FC = () => {
-  const [isOpen, setIsOpen] = useState(false); // Mobile menu
-  const [show, setShow] = useState(true); // Navbar show/hide
-  const [drawerOpen, setDrawerOpen] = useState(false); // Account drawer
   const { data: session } = useSession();
-  console.log("Session in Nav:", session);
-  const role = session?.user?.role;
-  const links = [
-    { name: "Home", href: "/" },
-    { name: "Shop", href: "/shops" },
-    { name: "About", href: "/about" },
-    { name: "Contact", href: "/contact" },
-  ];
-  if (role === "admin") {
-    links.push({ name: "Admin", href: "/admin" });
-  }
-  const icons = [
-    { icon: User, isAccount: true },
-    { icon: Search, href: "/search" },
-    { icon: Heart, href: "/wishlist" },
-    { icon: ShoppingCart, href: "/cart", isCart: true },
-  ];
+  const [isOpen, setIsOpen] = useState(false);
+  const [show, setShow] = useState(true);
+  const [drawerOpen, setDrawerOpen] = useState(false);
 
   const totalQuantity = useSelector(
     (state: RootState) => state.carts.totalQuantity
   );
 
-  // Navbar hide on scroll down
+  const role = session?.user?.role;
+  const isAdmin = role === "admin";
+
+  // 🔗 Navigation Links
+  const links = [
+    { name: "Home", href: "/" },
+    { name: "Shop", href: "/shops" },
+    { name: "About", href: "/about" },
+    { name: "Contact", href: "/contact" },
+    ...(isAdmin ? [{ name: "Admin", href: "/admin" }] : []),
+  ];
+
+  // 🔘 Navbar Icons
+  const icons = [
+    !isAdmin
+      ? { icon: User, onClick: () => setDrawerOpen(true) }
+      : { icon: LogOut, onClick: () => signOut() },
+    { icon: Search, href: "/search" },
+    { icon: Heart, href: "/wishlist" },
+    { icon: ShoppingCart, href: "/cart", isCart: true },
+  ];
+
+  // 🧠 Navbar hide on scroll
   useEffect(() => {
     let lastScroll = 0;
     const handleScroll = () => {
@@ -48,6 +62,32 @@ const Nav: React.FC = () => {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
+  // 🎨 Icon Renderer
+  const renderIcon = (item: any, index: number) => {
+    const Icon = item.icon;
+    const commonProps =
+      "text-gray-700 hover:text-gray-900 transition duration-150 ease-in-out";
+
+    return (
+      <div key={index} className="relative">
+        {item.href ? (
+          <a href={item.href} className={commonProps}>
+            <Icon className="h-6 w-6" />
+          </a>
+        ) : (
+          <button onClick={item.onClick} className={commonProps}>
+            <Icon className="h-6 w-6" />
+          </button>
+        )}
+        {item.isCart && totalQuantity > 0 && (
+          <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs w-5 h-5 rounded-full flex items-center justify-center font-semibold">
+            {totalQuantity}
+          </span>
+        )}
+      </div>
+    );
+  };
+
   return (
     <header
       className={`fixed top-0 left-0 w-full z-50 backdrop-blur-md bg-white/90 shadow-lg transition-transform duration-300 ${
@@ -56,12 +96,12 @@ const Nav: React.FC = () => {
     >
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
-          {/* Logo */}
+          {/* 🧁 Logo */}
           <div className="flex-shrink-0">
             <Image src="/logo.png" alt="logo" width={120} height={41} />
           </div>
 
-          {/* Desktop Links */}
+          {/* 🌐 Desktop Links */}
           <nav className="hidden md:flex space-x-10">
             {links.map((link) => (
               <a
@@ -74,54 +114,25 @@ const Nav: React.FC = () => {
             ))}
           </nav>
 
-          {/* Icons + Mobile Menu Button */}
+          {/* 🧭 Icons + Mobile Menu Button */}
           <div className="flex items-center space-x-4">
-            {/* Icons for Desktop */}
+            {/* 🖥️ Desktop Icons */}
             <div className="hidden md:flex items-center space-x-6">
-              {icons.map(
-                ({ icon: IconComponent, href, isCart, isAccount }, index) => (
-                  <div key={index} className="relative">
-                    {isAccount ? (
-                      <button
-                        onClick={() => setDrawerOpen(true)}
-                        className="text-gray-700 hover:text-gray-900 transition duration-150 ease-in-out"
-                      >
-                        <IconComponent className="h-6 w-6" />
-                      </button>
-                    ) : (
-                      <a
-                        href={href}
-                        className="text-gray-700 hover:text-gray-900 transition duration-150 ease-in-out"
-                      >
-                        <IconComponent className="h-6 w-6" />
-                      </a>
-                    )}
-                    {isCart && totalQuantity > 0 && (
-                      <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs w-5 h-5 rounded-full flex items-center justify-center font-semibold">
-                        {totalQuantity}
-                      </span>
-                    )}
-                  </div>
-                )
-              )}
+              {icons.map(renderIcon)}
             </div>
 
-            {/* Mobile Menu Button */}
+            {/* 📱 Mobile Menu Button */}
             <button
               onClick={() => setIsOpen(!isOpen)}
               className="md:hidden text-gray-700 hover:text-gray-900 focus:outline-none"
             >
-              {isOpen ? (
-                <X className="h-6 w-6" />
-              ) : (
-                <Menu className="h-6 w-6" />
-              )}
+              {isOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
             </button>
           </div>
         </div>
       </div>
 
-      {/* Mobile Menu */}
+      {/* 📱 Mobile Menu */}
       {isOpen && (
         <nav className="md:hidden bg-white shadow-md">
           <div className="px-4 pt-2 pb-4 space-y-4">
@@ -139,41 +150,18 @@ const Nav: React.FC = () => {
               ))}
             </ul>
 
-            {/* Icons below links */}
+            {/* Icons */}
             <ul className="flex justify-start items-center space-x-4 mt-2">
-              {icons.map(
-                ({ icon: IconComponent, href, isCart, isAccount }, index) => (
-                  <li key={index} className="relative">
-                    {isAccount ? (
-                      <button
-                        onClick={() => setDrawerOpen(true)}
-                        className="text-gray-700 hover:text-gray-900 transition duration-150 ease-in-out"
-                      >
-                        <IconComponent className="h-6 w-6" />
-                      </button>
-                    ) : (
-                      <a
-                        href={href}
-                        className="text-gray-700 hover:text-gray-900 transition duration-150 ease-in-out"
-                      >
-                        <IconComponent className="h-6 w-6" />
-                      </a>
-                    )}
-                    {isCart && totalQuantity > 0 && (
-                      <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs w-4 h-4 rounded-full flex items-center justify-center font-semibold">
-                        {totalQuantity}
-                      </span>
-                    )}
-                  </li>
-                )
-              )}
+              {icons.map(renderIcon)}
             </ul>
           </div>
         </nav>
       )}
 
-      {/* Account Drawer */}
-      <AccountDrawer drawerOpen={drawerOpen} setDrawerOpen={setDrawerOpen} />
+      {/* 🧩 Account Drawer */}
+      {!isAdmin && (
+        <AccountDrawer drawerOpen={drawerOpen} setDrawerOpen={setDrawerOpen} />
+      )}
     </header>
   );
 };
