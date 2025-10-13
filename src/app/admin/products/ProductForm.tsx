@@ -1,6 +1,11 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
+import { uploadToCloudinary } from "@/lib/utils";
+import {
+  useAddProductMutation,
+  useUpdateProductMutation,
+} from "@/app/redux/Api/productApi";
 
 interface ProductFormProps {
   product?: any;
@@ -17,10 +22,15 @@ const ProductForm: React.FC<ProductFormProps> = ({ product, onSuccess }) => {
     badge: "",
     isFeatured: false,
   });
-
+  const [imageFile, setImageFile] = useState<File | null>(null);
+  const [previewUrl, setPreviewUrl] = useState<string>("");
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
 
+  const [addProduct] = useAddProductMutation();
+  const [updateProduct] = useUpdateProductMutation();
+
+  // Prefill form if editing
   useEffect(() => {
     if (product) {
       setFormData({
@@ -32,9 +42,11 @@ const ProductForm: React.FC<ProductFormProps> = ({ product, onSuccess }) => {
         badge: product.badge || "",
         isFeatured: product.isFeatured || false,
       });
+      setPreviewUrl(product.imageUrl || "");
     }
   }, [product]);
 
+  // Handle input changes
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
@@ -45,47 +57,57 @@ const ProductForm: React.FC<ProductFormProps> = ({ product, onSuccess }) => {
     });
   };
 
+  // Handle image selection
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (!e.target.files || e.target.files.length === 0) return;
+    const file = e.target.files[0];
+    setImageFile(file);
+    setPreviewUrl(URL.createObjectURL(file));
+  };
+
+  // Submit handler
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
     setMessage("");
 
     try {
-      const res = await fetch(
-        product ? `/api/products/${product._id}` : "/api/products",
-        {
-          method: product ? "PUT" : "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            ...formData,
-            price: Number(formData.price),
-            oldPrice: formData.oldPrice ? Number(formData.oldPrice) : undefined,
-          }),
-        }
-      );
+      let uploadedUrl = formData.imageUrl;
 
-      if (!res.ok) throw new Error("Something went wrong");
+      if (imageFile) {
+        uploadedUrl = await uploadToCloudinary(imageFile);
+      }
 
-      setMessage(
-        product
-          ? "✅ Product updated successfully!"
-          : "✅ Product created successfully!"
-      );
+      const payload = {
+        ...formData,
+        price: Number(formData.price),
+        oldPrice: formData.oldPrice ? Number(formData.oldPrice) : undefined,
+        imageUrl: uploadedUrl,
+      };
 
-      setFormData({
-        name: "",
-        description: "",
-        price: "",
-        oldPrice: "",
-        imageUrl: "",
-        badge: "",
-        isFeatured: false,
-      });
+      if (product) {
+        await updateProduct({ id: product._id, data: payload }).unwrap();
+        setMessage("✅ Product updated successfully!");
+      } else {
+        await addProduct(payload).unwrap();
+        setMessage("✅ Product added successfully!");
+        setFormData({
+          name: "",
+          description: "",
+          price: "",
+          oldPrice: "",
+          imageUrl: "",
+          badge: "",
+          isFeatured: false,
+        });
+        setPreviewUrl("");
+        setImageFile(null);
+      }
 
       if (onSuccess) onSuccess();
-    } catch (err) {
+    } catch (err: any) {
       console.error(err);
-      setMessage("❌ Error saving product");
+      setMessage("❌ Don`t  saving product");
     } finally {
       setLoading(false);
     }
@@ -113,9 +135,9 @@ const ProductForm: React.FC<ProductFormProps> = ({ product, onSuccess }) => {
             <input
               type="text"
               name="name"
-              placeholder="Enter product name"
               value={formData.name}
               onChange={handleChange}
+              placeholder="Enter product name"
               className="w-full border border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 rounded-lg px-4 py-2 outline-none transition-all"
               required
             />
@@ -128,10 +150,10 @@ const ProductForm: React.FC<ProductFormProps> = ({ product, onSuccess }) => {
             </label>
             <textarea
               name="description"
-              placeholder="Write product description..."
               value={formData.description}
               onChange={handleChange}
               rows={3}
+              placeholder="Write product description..."
               className="w-full border border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 rounded-lg px-4 py-2 outline-none transition-all resize-none"
               required
             />
@@ -146,9 +168,9 @@ const ProductForm: React.FC<ProductFormProps> = ({ product, onSuccess }) => {
               <input
                 type="number"
                 name="price"
-                placeholder="Enter price"
                 value={formData.price}
                 onChange={handleChange}
+                placeholder="Enter price"
                 className="w-full border border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 rounded-lg px-4 py-2 outline-none transition-all"
                 required
               />
@@ -160,28 +182,32 @@ const ProductForm: React.FC<ProductFormProps> = ({ product, onSuccess }) => {
               <input
                 type="number"
                 name="oldPrice"
-                placeholder="Optional"
                 value={formData.oldPrice}
                 onChange={handleChange}
+                placeholder="Optional"
                 className="w-full border border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 rounded-lg px-4 py-2 outline-none transition-all"
               />
             </div>
           </div>
 
-          {/* Image */}
+          {/* Image Upload */}
           <div>
             <label className="block font-medium text-gray-700 mb-1">
-              Image URL <span className="text-red-500">*</span>
+              Product Image <span className="text-red-500">*</span>
             </label>
             <input
-              type="text"
-              name="imageUrl"
-              placeholder="https://example.com/image.jpg"
-              value={formData.imageUrl}
-              onChange={handleChange}
-              className="w-full border border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 rounded-lg px-4 py-2 outline-none transition-all"
-              required
+              type="file"
+              accept="image/*"
+              onChange={handleImageChange}
+              className="w-full"
             />
+            {previewUrl && (
+              <img
+                src={previewUrl}
+                alt="Preview"
+                className="mt-2 h-40 w-full object-cover rounded-lg border"
+              />
+            )}
           </div>
 
           {/* Badge */}
@@ -192,9 +218,9 @@ const ProductForm: React.FC<ProductFormProps> = ({ product, onSuccess }) => {
             <input
               type="text"
               name="badge"
-              placeholder="e.g., -30%"
               value={formData.badge}
               onChange={handleChange}
+              placeholder="e.g., -30%"
               className="w-full border border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 rounded-lg px-4 py-2 outline-none transition-all"
             />
           </div>
@@ -215,7 +241,7 @@ const ProductForm: React.FC<ProductFormProps> = ({ product, onSuccess }) => {
           <button
             type="submit"
             disabled={loading}
-            className="w-full bg-[#B88E2F] text-white font-semibold py-3 rounded-lg shadow-md hover:from-blue-700 hover:to-indigo-700 transition-all disabled:opacity-50"
+            className="w-full bg-[#B88E2F] text-white font-semibold py-3 rounded-lg shadow-md hover:opacity-90 transition-all disabled:opacity-50"
           >
             {loading ? "Saving..." : product ? "Update Product" : "Add Product"}
           </button>
@@ -223,9 +249,7 @@ const ProductForm: React.FC<ProductFormProps> = ({ product, onSuccess }) => {
           {message && (
             <p
               className={`text-center mt-2 font-medium ${
-                message.startsWith("✅")
-                  ? "text-green-600"
-                  : "text-red-600"
+                message.startsWith("✅") ? "text-green-600" : "text-red-600"
               }`}
             >
               {message}
