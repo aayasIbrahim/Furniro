@@ -1,19 +1,36 @@
 "use client";
+
 import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import { uploadToCloudinary } from "@/lib/utils";
-import { Product } from "@/app/redux/Api/productTypes";  //product type  nia aslam resulable banilam
+import { Product } from "@/app/redux/Api/productTypes";
 import {
   useAddProductMutation,
   useUpdateProductMutation,
+  useGetProductByIdQuery, // ✅ single product fetch
 } from "@/app/redux/Api/productApi";
 
 interface ProductFormProps {
   product?: Product;
+  productId?: string;
   onSuccess?: () => void;
+  onClose?: () => void;
 }
 
-const ProductForm: React.FC<ProductFormProps> = ({ product, onSuccess }) => {
+const ProductForm: React.FC<ProductFormProps> = ({
+  productId,
+  product,
+  onSuccess,
+  onClose,
+}) => {
+  // ✅ Fetch product by ID (for edit mode)
+  const { data: fetchedProduct } = useGetProductByIdQuery(productId!, {
+    skip: !productId,
+  });
+
+  const activeProduct = product || fetchedProduct; // ✅ whichever available
+  const isEditMode = Boolean(productId || product);
+
   const [formData, setFormData] = useState({
     name: "",
     description: "",
@@ -24,57 +41,48 @@ const ProductForm: React.FC<ProductFormProps> = ({ product, onSuccess }) => {
     isFeatured: false,
   });
   const [imageFile, setImageFile] = useState<File | null>(null);
-  const [previewUrl, setPreviewUrl] = useState<string>("");
+  const [previewUrl, setPreviewUrl] = useState("");
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
 
   const [addProduct] = useAddProductMutation();
   const [updateProduct] = useUpdateProductMutation();
 
-  // Prefill form if editing
+  // ✅ Prefill when edit mode
   useEffect(() => {
-    if (product) {
+    if (isEditMode && activeProduct) {
       setFormData({
-        name: product.name || "",
-        description: product.description || "",
-        price: product.price?.toString() || "",
-        oldPrice: product.oldPrice?.toString() || "",
-        imageUrl: product.imageUrl || "",
-        badge: product.badge || "",
-        isFeatured: product.isFeatured || false,
+        name: activeProduct.name || "",
+        description: activeProduct.description || "",
+        price: activeProduct.price?.toString() || "",
+        oldPrice: activeProduct.oldPrice?.toString() || "",
+        imageUrl: activeProduct.imageUrl || "",
+        badge: activeProduct.badge || "",
+        isFeatured: activeProduct.isFeatured || false,
       });
-      setPreviewUrl(product.imageUrl || "");
+      setPreviewUrl(activeProduct.imageUrl || "");
     }
-  }, [product]);
+  }, [isEditMode, activeProduct]);
 
-  // Handle input changes
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
-    const target = e.target;
-    const { name, value, type } = target;
-
-    // Checkbox হলে checked use করো
+    const { name, value, type } = e.target;
     const val =
-      type === "checkbox" && target instanceof HTMLInputElement
-        ? target.checked
+      type === "checkbox" && e.target instanceof HTMLInputElement
+        ? e.target.checked
         : value;
 
-    setFormData({
-      ...formData,
-      [name]: val,
-    });
+    setFormData({ ...formData, [name]: val });
   };
 
-  // Handle image selection
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (!e.target.files || e.target.files.length === 0) return;
+    if (!e.target.files?.length) return;
     const file = e.target.files[0];
     setImageFile(file);
     setPreviewUrl(URL.createObjectURL(file));
   };
 
-  // Submit handler
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
@@ -94,8 +102,8 @@ const ProductForm: React.FC<ProductFormProps> = ({ product, onSuccess }) => {
         imageUrl: uploadedUrl,
       };
 
-      if (product) {
-        await updateProduct({ id: product.id, data: payload }).unwrap();
+      if (isEditMode && activeProduct) {
+        await updateProduct({ id: activeProduct._id, data: payload }).unwrap();
         setMessage("✅ Product updated successfully!");
       } else {
         await addProduct(payload).unwrap();
@@ -109,14 +117,15 @@ const ProductForm: React.FC<ProductFormProps> = ({ product, onSuccess }) => {
           badge: "",
           isFeatured: false,
         });
-        setPreviewUrl("");
         setImageFile(null);
+        setPreviewUrl("");
       }
 
-      if (onSuccess) onSuccess();
-    } catch {
-      console.error("Error saving product:");
-      setMessage("❌ Don`t  saving product");
+      onSuccess?.();
+      onClose?.();
+    } catch (error) {
+      console.error("Error saving product:", error);
+      setMessage("❌ Failed to save product. Please try again.");
     } finally {
       setLoading(false);
     }
@@ -129,77 +138,49 @@ const ProductForm: React.FC<ProductFormProps> = ({ product, onSuccess }) => {
         className="w-full max-w-xl bg-white shadow-lg border border-gray-100 rounded-2xl p-8 transition-all duration-300 hover:shadow-xl"
       >
         <h2 className="text-3xl font-bold text-gray-800 mb-2 text-center">
-          {product ? "Edit Product" : "Add New Product"}
+          {isEditMode ? "Edit Product" : "Add New Product"}
         </h2>
         <p className="text-gray-500 text-center mb-8">
-          Fill in the details below to {product ? "update" : "add"} your product
+          {isEditMode
+            ? "Update product details below"
+            : "Fill in the details to add your product"}
         </p>
 
         <div className="space-y-6">
-          {/* Name */}
-          <div>
-            <label className="block font-medium text-gray-700 mb-1">
-              Product Name <span className="text-red-500">*</span>
-            </label>
-            <input
-              type="text"
-              name="name"
-              value={formData.name}
-              onChange={handleChange}
-              placeholder="Enter product name"
-              className="w-full border border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 rounded-lg px-4 py-2 outline-none transition-all"
-              required
-            />
-          </div>
+          <InputField
+            label="Product Name"
+            name="name"
+            value={formData.name}
+            onChange={handleChange}
+            required
+          />
 
-          {/* Description */}
-          <div>
-            <label className="block font-medium text-gray-700 mb-1">
-              Description <span className="text-red-500">*</span>
-            </label>
-            <textarea
-              name="description"
-              value={formData.description}
-              onChange={handleChange}
-              rows={3}
-              placeholder="Write product description..."
-              className="w-full border border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 rounded-lg px-4 py-2 outline-none transition-all resize-none"
-              required
-            />
-          </div>
+          <TextAreaField
+            label="Description"
+            name="description"
+            value={formData.description}
+            onChange={handleChange}
+            required
+          />
 
-          {/* Price */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <div>
-              <label className="block font-medium text-gray-700 mb-1">
-                Price <span className="text-red-500">*</span>
-              </label>
-              <input
-                type="number"
-                name="price"
-                value={formData.price}
-                onChange={handleChange}
-                placeholder="Enter price"
-                className="w-full border border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 rounded-lg px-4 py-2 outline-none transition-all"
-                required
-              />
-            </div>
-            <div>
-              <label className="block font-medium text-gray-700 mb-1">
-                Old Price
-              </label>
-              <input
-                type="number"
-                name="oldPrice"
-                value={formData.oldPrice}
-                onChange={handleChange}
-                placeholder="Optional"
-                className="w-full border border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 rounded-lg px-4 py-2 outline-none transition-all"
-              />
-            </div>
+            <InputField
+              label="Price"
+              name="price"
+              type="number"
+              value={formData.price}
+              onChange={handleChange}
+              required
+            />
+            <InputField
+              label="Old Price"
+              name="oldPrice"
+              type="number"
+              value={formData.oldPrice}
+              onChange={handleChange}
+            />
           </div>
 
-          {/* Image Upload */}
           <div>
             <label className="block font-medium text-gray-700 mb-1">
               Product Image <span className="text-red-500">*</span>
@@ -211,7 +192,7 @@ const ProductForm: React.FC<ProductFormProps> = ({ product, onSuccess }) => {
               className="w-full"
             />
             {previewUrl && (
-              <div className="mt-2 h-40 w-full relative">
+              <div className="mt-2 relative w-full h-48">
                 <Image
                   src={previewUrl}
                   alt="Preview"
@@ -223,22 +204,13 @@ const ProductForm: React.FC<ProductFormProps> = ({ product, onSuccess }) => {
             )}
           </div>
 
-          {/* Badge */}
-          <div>
-            <label className="block font-medium text-gray-700 mb-1">
-              Badge (optional)
-            </label>
-            <input
-              type="text"
-              name="badge"
-              value={formData.badge}
-              onChange={handleChange}
-              placeholder="e.g., -30%"
-              className="w-full border border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 rounded-lg px-4 py-2 outline-none transition-all"
-            />
-          </div>
+          <InputField
+            label="Badge (optional)"
+            name="badge"
+            value={formData.badge}
+            onChange={handleChange}
+          />
 
-          {/* Featured */}
           <div className="flex items-center gap-2">
             <input
               type="checkbox"
@@ -252,13 +224,16 @@ const ProductForm: React.FC<ProductFormProps> = ({ product, onSuccess }) => {
             </label>
           </div>
 
-          {/* Submit */}
           <button
             type="submit"
             disabled={loading}
             className="w-full bg-[#B88E2F] text-white font-semibold py-3 rounded-lg shadow-md hover:opacity-90 transition-all disabled:opacity-50"
           >
-            {loading ? "Saving..." : product ? "Update Product" : "Add Product"}
+            {loading
+              ? "Saving..."
+              : isEditMode
+              ? "Update Product"
+              : "Add Product"}
           </button>
 
           {message && (
@@ -275,5 +250,71 @@ const ProductForm: React.FC<ProductFormProps> = ({ product, onSuccess }) => {
     </div>
   );
 };
+
+// ✅ Input Field
+interface InputProps {
+  label: string;
+  name: string;
+  value: string;
+  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  type?: string;
+  required?: boolean;
+}
+
+const InputField: React.FC<InputProps> = ({
+  label,
+  name,
+  value,
+  onChange,
+  type = "text",
+  required = false,
+}) => (
+  <div>
+    <label className="block font-medium text-gray-700 mb-1">
+      {label} {required && <span className="text-red-500">*</span>}
+    </label>
+    <input
+      type={type}
+      name={name}
+      value={value}
+      onChange={onChange}
+      placeholder={`Enter ${label.toLowerCase()}`}
+      className="w-full border border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 rounded-lg px-4 py-2 outline-none transition-all"
+      required={required}
+    />
+  </div>
+);
+
+// ✅ TextArea Field
+interface TextAreaProps {
+  label: string;
+  name: string;
+  value: string;
+  onChange: (e: React.ChangeEvent<HTMLTextAreaElement>) => void;
+  required?: boolean;
+}
+
+const TextAreaField: React.FC<TextAreaProps> = ({
+  label,
+  name,
+  value,
+  onChange,
+  required = false,
+}) => (
+  <div>
+    <label className="block font-medium text-gray-700 mb-1">
+      {label} {required && <span className="text-red-500">*</span>}
+    </label>
+    <textarea
+      name={name}
+      value={value}
+      onChange={onChange}
+      rows={3}
+      placeholder={`Enter ${label.toLowerCase()}`}
+      className="w-full border border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 rounded-lg px-4 py-2 outline-none transition-all resize-none"
+      required={required}
+    />
+  </div>
+);
 
 export default ProductForm;
