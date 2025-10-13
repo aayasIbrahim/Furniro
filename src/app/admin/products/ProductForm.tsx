@@ -185,12 +185,14 @@ const ProductForm: React.FC<ProductFormProps> = ({
             <label className="block font-medium text-gray-700 mb-1">
               Product Image <span className="text-red-500">*</span>
             </label>
+
             <input
               type="file"
               accept="image/*"
               onChange={handleImageChange}
-              className="w-full"
+              className="w-full border border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 rounded-lg px-4 py-2 outline-none transition-all"
             />
+
             {previewUrl && (
               <div className="mt-2 relative w-full h-48">
                 <Image
@@ -200,6 +202,15 @@ const ProductForm: React.FC<ProductFormProps> = ({
                   className="object-cover rounded-lg border"
                   sizes="(max-width: 768px) 100vw, 400px"
                 />
+
+                {/* Cancel / Remove Button */}
+                <button
+                  type="button"
+                  onClick={() => setPreviewUrl("")} // বা handleImageRemove()
+                  className="absolute top-2 right-2 bg-red-500 text-white px-3 py-1 rounded"
+                >
+                  X
+                </button>
               </div>
             )}
           </div>

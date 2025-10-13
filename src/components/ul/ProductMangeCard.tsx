@@ -1,6 +1,5 @@
 
 "use client";
-
 import React from "react";
 import { Product } from "@/app/redux/Api/productTypes";
 import Image from "next/image";
