@@ -1,7 +1,10 @@
 import React from 'react'
+import ProductForm from './ProductForm'
 
 export default function page() {
   return (
-    <div>i am product page</div>
+    <>
+    <ProductForm/>
+    </>
   )
 }

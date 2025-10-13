@@ -14,7 +14,7 @@ export default function AdminLayout({
     <html lang="en">
       <body>
         <div className="flex min-h-screen bg-gray-100 relative">
-          {/* 📱 Mobile Sidebar Toggle Button */}
+          {/* ☰ Hamburger Menu */}
           <button
             onClick={() => setSidebarOpen(!sidebarOpen)}
             className="md:hidden fixed top-4 right-4 z-50 bg-[#B88E2F] text-white p-2 rounded-md shadow-md"
@@ -29,8 +29,7 @@ export default function AdminLayout({
           >
             <Sidebar />
           </div>
-
-          {/* 🌐 Main Content */}
+          
           <main
             className="flex-1 p-4 md:p-6 pt-20 md:pt-6 w-full overflow-y-auto"
             onClick={() => sidebarOpen && setSidebarOpen(false)}
