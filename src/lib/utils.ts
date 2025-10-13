@@ -1,6 +1,5 @@
 export const uploadToCloudinary = async (file: File) => {
   if (!file) throw new Error("No file provided");
-
   const formData = new FormData();
   formData.append("file", file); // Cloudinary expects 'file' field
   formData.append(
