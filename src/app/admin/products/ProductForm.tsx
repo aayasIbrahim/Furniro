@@ -1,14 +1,15 @@
 "use client";
-
 import React, { useState, useEffect } from "react";
+import Image from "next/image";
 import { uploadToCloudinary } from "@/lib/utils";
+import { Product } from "@/app/redux/Api/productTypes";  //product type  nia aslam resulable banilam
 import {
   useAddProductMutation,
   useUpdateProductMutation,
 } from "@/app/redux/Api/productApi";
 
 interface ProductFormProps {
-  product?: any;
+  product?: Product;
   onSuccess?: () => void;
 }
 
@@ -50,10 +51,18 @@ const ProductForm: React.FC<ProductFormProps> = ({ product, onSuccess }) => {
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
-    const { name, value, type, checked } = e.target;
+    const target = e.target;
+    const { name, value, type } = target;
+
+    // Checkbox হলে checked use করো
+    const val =
+      type === "checkbox" && target instanceof HTMLInputElement
+        ? target.checked
+        : value;
+
     setFormData({
       ...formData,
-      [name]: type === "checkbox" ? checked : value,
+      [name]: val,
     });
   };
 
@@ -86,7 +95,7 @@ const ProductForm: React.FC<ProductFormProps> = ({ product, onSuccess }) => {
       };
 
       if (product) {
-        await updateProduct({ id: product._id, data: payload }).unwrap();
+        await updateProduct({ id: product.id, data: payload }).unwrap();
         setMessage("✅ Product updated successfully!");
       } else {
         await addProduct(payload).unwrap();
@@ -105,8 +114,8 @@ const ProductForm: React.FC<ProductFormProps> = ({ product, onSuccess }) => {
       }
 
       if (onSuccess) onSuccess();
-    } catch (err: any) {
-      console.error(err);
+    } catch {
+      console.error("Error saving product:");
       setMessage("❌ Don`t  saving product");
     } finally {
       setLoading(false);
@@ -202,11 +211,15 @@ const ProductForm: React.FC<ProductFormProps> = ({ product, onSuccess }) => {
               className="w-full"
             />
             {previewUrl && (
-              <img
-                src={previewUrl}
-                alt="Preview"
-                className="mt-2 h-40 w-full object-cover rounded-lg border"
-              />
+              <div className="mt-2 h-40 w-full relative">
+                <Image
+                  src={previewUrl}
+                  alt="Preview"
+                  fill
+                  className="object-cover rounded-lg border"
+                  sizes="(max-width: 768px) 100vw, 400px"
+                />
+              </div>
             )}
           </div>
 
@@ -234,7 +247,9 @@ const ProductForm: React.FC<ProductFormProps> = ({ product, onSuccess }) => {
               onChange={handleChange}
               className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-[#B88E2F]"
             />
-            <label className="text-gray-700 font-medium">Featured Product</label>
+            <label className="text-gray-700 font-medium">
+              Featured Product
+            </label>
           </div>
 
           {/* Submit */}
