@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useMemo } from "react";
+import React from "react";
 import { useSelector, useDispatch } from "react-redux";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
@@ -16,8 +16,8 @@ const ShoppingCart = () => {
   const router = useRouter();
   const dispatch = useDispatch();
 
-  // 🛒 Redux cart state
-  const cartItems = useSelector((state: RootState) => state.carts.items);
+  const { items, totalPrice } = useSelector((state: RootState) => state.carts);
+  console.log("Cart items:", items);
 
   const ACCENT_COLOR = "bg-[#B88E2F]";
   const ACCENT_TEXT = "text-[#B88E2F]";
@@ -25,12 +25,6 @@ const ShoppingCart = () => {
 
   const formatPrice = (price: number) =>
     `Rs. ${price.toLocaleString("en-IN", { minimumFractionDigits: 2 })}`;
-
-  // subtotal and total calculation
-  const { subtotal, total } = useMemo(() => {
-    const sub = cartItems.reduce((acc, item) => acc + item.price * item.quantity, 0);
-    return { subtotal: sub, total: sub };
-  }, [cartItems]);
 
   return (
     <div className="p-8 md:p-16 max-w-7xl mx-auto font-sans">
@@ -49,9 +43,9 @@ const ShoppingCart = () => {
               </tr>
             </thead>
             <tbody>
-              {cartItems.length > 0 ? (
-                cartItems.map((item) => (
-                  <tr key={item.id} className="border-b border-gray-200 last:border-b-0">
+              {items.length > 0 ? (
+                items.map((item) => (
+                  <tr key={item._id} className="border-b border-gray-200 last:border-b-0">
                     <td className="py-5 pr-4 w-28 relative h-20">
                       <Image
                         src={item.imageUrl}
@@ -65,14 +59,14 @@ const ShoppingCart = () => {
                     <td className="text-gray-700">{formatPrice(item.price)}</td>
                     <td className="flex items-center gap-2">
                       <button
-                        onClick={() => dispatch(decrementQuantity(item.id))}
+                        onClick={() => dispatch(decrementQuantity(item._id))}
                         className={`px-3 py-1 ${ACCENT_TEXT} border border-gray-300 rounded-md`}
                       >
                         -
                       </button>
                       <span>{item.quantity}</span>
                       <button
-                        onClick={() => dispatch(incrementQuantity(item.id))}
+                        onClick={() => dispatch(incrementQuantity(item._id))}
                         className={`px-3 py-1 ${ACCENT_TEXT} border border-gray-300 rounded-md`}
                       >
                         +
@@ -83,7 +77,7 @@ const ShoppingCart = () => {
                     </td>
                     <td>
                       <button
-                        onClick={() => dispatch(removeFromCart(item.id))}
+                        onClick={() => dispatch(removeFromCart(item._id))}
                         className={`p-2 ${ACCENT_TEXT} text-xl hover:text-[#9c7827] transition-colors`}
                       >
                         🗑️
@@ -108,12 +102,12 @@ const ShoppingCart = () => {
 
           <div className="flex justify-between items-center py-3 border-b border-gray-300">
             <span className="text-lg text-gray-600">Subtotal</span>
-            <span className="text-lg text-gray-500 font-medium">{formatPrice(subtotal)}</span>
+            <span className="text-lg text-gray-500 font-medium">{formatPrice(totalPrice)}</span>
           </div>
 
           <div className="flex justify-between items-center py-3 mt-4">
             <span className="text-xl font-bold text-gray-800">Total</span>
-            <span className={`text-2xl font-bold ${ACCENT_TEXT}`}>{formatPrice(total)}</span>
+            <span className={`text-2xl font-bold ${ACCENT_TEXT}`}>{formatPrice(totalPrice)}</span>
           </div>
 
           <button
@@ -123,7 +117,7 @@ const ShoppingCart = () => {
             Check Out
           </button>
 
-          {cartItems.length > 0 && (
+          {items.length > 0 && (
             <button
               className="w-full mt-4 py-2 text-sm font-semibold text-gray-800 border border-gray-400 rounded-lg hover:bg-gray-100 transition-colors"
               onClick={() => dispatch(clearCart())}

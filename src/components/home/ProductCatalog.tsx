@@ -8,7 +8,9 @@ import LoadingGrid from "../ul/LoadingGrid";
 
 const ProductCatalog = () => {
   const router = useRouter();
-  const { data, isLoading } = useGetProductsQuery();
+  const limit = 4; // front-end থেকে control করা যাবে
+  const { data, isLoading } = useGetProductsQuery({limit});
+
   const products = data?.products || [];
   console.log("ProductCatalog products:", products);
 

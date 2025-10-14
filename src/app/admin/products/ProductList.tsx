@@ -9,7 +9,7 @@ import { Product } from "@/app/redux/Api/productTypes";
 import Pagination from "@/components/ul/Paginataion";
 
 interface ProductListProps {
-  onEdit: (id: string) => void; // 🟢 parent callback
+  onEdit: (id: string) => void; 
 }
 
 export default function ProductList({ onEdit }: ProductListProps) {

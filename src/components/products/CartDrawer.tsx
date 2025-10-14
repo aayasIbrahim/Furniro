@@ -4,6 +4,7 @@ import React, { useMemo } from "react";
 import Image from "next/image";
 import Link from "next/link";
 
+
 // --- Types ---
 type CartItemType = {
   _id:  string;
@@ -150,9 +151,9 @@ const CartDrawer: React.FC<CartDrawerProps> = ({ isOpen, onClose, cartItems, onR
               <span className="text-xl font-bold text-gray-900">{formatCurrency(subtotal)}</span>
             </div>
             <div className="flex space-x-2">
-              <button className="flex-1 px-4 py-2 text-sm font-semibold text-gray-800 border border-gray-400 rounded-lg hover:bg-gray-100 transition duration-150">
+              <Link href="/cart" className="flex-1 px-4 py-2 text-sm font-semibold text-gray-800 border border-gray-400 rounded-lg hover:bg-gray-100 transition duration-150">
                 Cart
-              </button>
+              </Link>
               <Link href='/checkout' className="flex-1 px-4 py-2 text-sm font-semibold text-white bg-yellow-600 rounded-lg shadow-md hover:bg-yellow-700 transition duration-150">
                 Checkout
               </Link>

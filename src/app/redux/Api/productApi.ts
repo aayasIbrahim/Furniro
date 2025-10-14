@@ -16,18 +16,24 @@ export const productApi = createApi({
   baseQuery: fetchBaseQuery({ baseUrl: "/api/products" }),
   tagTypes: ["Product"],
   endpoints: (builder) => ({
-    // Fetch all or paginated products
+    // Get products with optional pagination and search
     getProducts: builder.query<
       GetProductResponse,
-      { page?: number; limit?: number } | void
+      { page?: number; limit?: number; search?: string } | void
     >({
       query: (params) => {
-        if (!params?.page || !params?.limit) {
-          // Fetch all
-          return "/";
-        }
-        // Paginated fetch
-        return `/?page=${params.page}&limit=${params.limit}`;
+        const page = params?.page;
+        const limit = params?.limit ?? 8;
+        const search = params?.search?.trim() || "";
+
+        // ✅ query string বানানো
+        const queryString = new URLSearchParams();
+        if (page) queryString.append("page", page.toString());
+        if (limit) queryString.append("limit", limit.toString());
+        if (search) queryString.append("search", search);
+
+        // ✅ endpoint path
+        return `/?${queryString.toString()}`;
       },
       providesTags: ["Product"],
     }),

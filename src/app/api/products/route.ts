@@ -3,56 +3,67 @@ import connectDB from "@/lib/db";
 import Product from "@/models/Product";
 export const dynamic = "force-dynamic"; // disable caching
 
+
 // =====================
-// GET (with pagination)
+// GET (with Search + Pagination)
 // =====================
 
 export async function GET(req: Request) {
   try {
     await connectDB();
-    // 2️⃣ URL থেকে query parameters বের করি
+
+    // 🔹 Query parameters
     const { searchParams } = new URL(req.url);
     const pageParam = searchParams.get("page");
     const limitParam = searchParams.get("limit");
+    const search = searchParams.get("search") || "";
 
     let products, pagination = null;
 
+    // 🔹 Search filter (name or description)
+    const searchFilter = search
+      ? {
+          $or: [
+            { name: { $regex: search, $options: "i" } },
+            { description: { $regex: search, $options: "i" } },
+          ],
+        }
+      : {};
+
+    // 🔹 Pagination
     if (pageParam && limitParam) {
-      // 3️⃣ Pagination parameters safely parse
-      const page = Math.max(parseInt(pageParam, 10) || 1, 1); // কমপক্ষে 1
-      const limit = Math.min(Math.max(parseInt(limitParam, 10) || 10, 1), 100); // 1 থেকে 100
+      const page = Math.max(parseInt(pageParam, 10) || 1, 1);
+      const limit = Math.min(Math.max(parseInt(limitParam, 10) || 10, 1), 100);
       const skip = (page - 1) * limit;
 
-      // 4️⃣ Products এবং total count একই সাথে fetch
+      // 🔹 Fetch products + total count (with search filter)
       const [list, total] = await Promise.all([
-        Product.find({}).skip(skip).limit(limit).lean(),
-        Product.countDocuments(),
+        Product.find(searchFilter).skip(skip).limit(limit).lean(),
+        Product.countDocuments(searchFilter),
       ]);
 
       products = list;
       pagination = {
-        total,                 // total products
-        page,                  // current page
-        limit,                 // items per page
-        totalPages: Math.ceil(total / limit), // মোট page সংখ্যা
+        total, // total products
+        page, // current page
+        limit, // items per page
+        totalPages: Math.ceil(total / limit),
       };
     } else {
-      // 5️⃣ Pagination না থাকলে সব product return
-      products = await Product.find({}).lean();
+      // 🔹 Homepage / no pagination
+      products = await Product.find(searchFilter).limit(8).lean();
     }
 
-    // 6️⃣ Response return
+    // ✅ Return response
     return NextResponse.json({ success: true, products, pagination });
-
   } catch (err) {
-    // 7️⃣ Error handling
+    console.error("❌ Error fetching products:", err);
     return NextResponse.json(
       { success: false, error: (err as Error).message || "Server error" },
       { status: 500 }
     );
   }
 }
-
 
 
 // =====================
