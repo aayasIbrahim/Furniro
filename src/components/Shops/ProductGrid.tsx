@@ -10,7 +10,6 @@ const ProductGrid = () => {
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState("");
   const [debouncedSearch, setDebouncedSearch] = useState(search);
-
   const limit = 8;
 
   // 🔹 Debounce: update debouncedSearch 500ms after typing stops
