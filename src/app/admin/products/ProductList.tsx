@@ -14,13 +14,14 @@ interface ProductListProps {
 
 export default function ProductList({ onEdit }: ProductListProps) {
   const [page, setPage] = useState(1);
-  const limit = 3;
+  const limit = 6; // items per page
 
   const { data, isLoading, isError } = useGetProductsQuery({ page, limit });
+  console.log("Fetched products:", data);
   const products = data?.products || [];
   const totalPages = data?.pagination?.totalPages || 1;
 
-  const [deleteProduct] = useDeleteProductMutation();
+  const [deleteProduct] = useDeleteProductMutation(); // deleteproduct assing korlam useDeleteProductMutation ke
 
   const handleDelete = async (id: string) => {
     try {
@@ -40,7 +41,7 @@ export default function ProductList({ onEdit }: ProductListProps) {
     );
 
   return (
-    <div className="max-w-6xl mx-auto space-y-10">
+    <div className="max-w-6xl mx-auto space-y-10 mt-[50px]">
       <h2 className="text-3xl font-bold text-center Black">All Products</h2>
 
       {/* Product List */}

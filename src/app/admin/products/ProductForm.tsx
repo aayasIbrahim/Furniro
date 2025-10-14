@@ -132,7 +132,7 @@ const ProductForm: React.FC<ProductFormProps> = ({
   };
 
   return (
-    <div className="flex justify-center items-center py-10 px-4 bg-gray-50">
+    <div className="flex justify-center items-center  px-4 ">
       <form
         onSubmit={handleSubmit}
         className="w-full max-w-xl bg-white shadow-lg border border-gray-100 rounded-2xl p-8 transition-all duration-300 hover:shadow-xl"
@@ -165,7 +165,7 @@ const ProductForm: React.FC<ProductFormProps> = ({
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <InputField
-              label="Price"
+              label="Sell Price"
               name="price"
               type="number"
               value={formData.price}

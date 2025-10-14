@@ -6,7 +6,7 @@ import Link from "next/link";
 
 // --- Types ---
 type CartItemType = {
-  id: number;
+  _id:  string;
   name: string;
   price: number;
   quantity: number;
@@ -79,7 +79,7 @@ const CartItemComponent: React.FC<{ item: CartItemType; onRemove: (id: number) =
       </div>
     </div>
     <button
-      onClick={() => onRemove(item.id)}
+      onClick={() => onRemove(Number(item._id))}
       aria-label={`Remove ${item.name}`}
       className="text-gray-400 hover:text-red-500 transition duration-150 p-2 -mr-2 mt-4 rounded-full"
     >
@@ -136,7 +136,7 @@ const CartDrawer: React.FC<CartDrawerProps> = ({ isOpen, onClose, cartItems, onR
           <div className="flex-grow overflow-y-auto px-6">
             {cartItems.length > 0 ? (
               cartItems.map((item) => (
-                <CartItemComponent key={item.id} item={item} onRemove={onRemoveItem} />
+                <CartItemComponent key={item._id} item={item} onRemove={onRemoveItem} />
               ))
             ) : (
               <div className="p-8 text-center text-gray-500">Your cart is empty.</div>

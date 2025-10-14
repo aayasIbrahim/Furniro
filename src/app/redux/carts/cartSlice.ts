@@ -1,14 +1,6 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { CartItem } from "./cartItemType";
 
-interface CartItem {
-  id: number;
-  name: string;
-  price: number;
-  imageUrl: string;
-  quantity: number;
-  size: string;
-  color: string;
-}
 
 interface CartState {
   items: CartItem[];
@@ -34,7 +26,7 @@ const cartSlice = createSlice({
   initialState,
   reducers: {
     addToCart: (state, action: PayloadAction<CartItem>) => {
-      const existingItem = state.items.find((item) => item.id === action.payload.id);
+      const existingItem = state.items.find((item) => item._id === action.payload._id);
 
       if (existingItem) {
         existingItem.quantity += action.payload.quantity; // Add incoming quantity
@@ -46,18 +38,18 @@ const cartSlice = createSlice({
     },
 
     removeFromCart: (state, action: PayloadAction<number | string>) => {
-      state.items = state.items.filter((item) => item.id !== action.payload);
+      state.items = state.items.filter((item) => item._id !== action.payload);
       Object.assign(state, calculateTotals(state.items));
     },
 
     incrementQuantity: (state, action: PayloadAction<number | string>) => {
-      const item = state.items.find((i) => i.id === action.payload);
+      const item = state.items.find((i) => i._id === action.payload);
       if (item) item.quantity += 1;
       Object.assign(state, calculateTotals(state.items));
     },
 
     decrementQuantity: (state, action: PayloadAction<number | string>) => {
-      const item = state.items.find((i) => i.id === action.payload);
+      const item = state.items.find((i) => i._id === action.payload);
       if (item && item.quantity > 1) item.quantity -= 1;
       Object.assign(state, calculateTotals(state.items));
     },

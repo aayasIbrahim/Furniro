@@ -2,24 +2,11 @@
 import React from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { Product } from "@/app/redux/Api/productTypes";
 
 import { Share2, Scale, Heart } from "lucide-react";
 
-type Product = {
-  id: number;
-  name: string;
-  description: string;
-  price: number;
-  oldPrice?: number;
-  imageUrl: string;
-  badge?: string;
-  isFeatured?: boolean;
-  size?: string[];    // optional array of sizes
-  colors?: string[];  // optional array of colors
-};
-
 const ProductCard: React.FC<{ product: Product }> = ({ product }) => {
-
   return (
     <div
       className={`group relative bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 ${
@@ -30,7 +17,7 @@ const ProductCard: React.FC<{ product: Product }> = ({ product }) => {
     >
       {/* Image */}
       <div className="relative h-[360px] overflow-hidden">
-        <Link href={`/products/${product.id}`}>
+        <Link href={`/products/${product._id}`}>
           <Image
             src={product.imageUrl}
             alt={product.name}
@@ -53,7 +40,7 @@ const ProductCard: React.FC<{ product: Product }> = ({ product }) => {
         {/* Hover Overlay */}
         <div className="absolute inset-0 bg-black/50 flex flex-col items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
           <Link
-            href={`/products/${product.id}`}
+            href={`/products/${product._id}`}
             className="bg-white text-[#B88E2F] font-semibold px-8 py-3 rounded-md mb-4 hover:bg-purple-50 transition-all duration-200"
           >
             Add to cart
@@ -74,7 +61,7 @@ const ProductCard: React.FC<{ product: Product }> = ({ product }) => {
       </div>
 
       {/* Product Info */}
-      <Link href={`/products/${product.id}`}>
+      <Link href={`/products/${product._id}`}>
         <div className="p-6 text-center">
           <h3 className="font-poppins text-xl font-semibold text-gray-800 mb-1">
             {product.name}
