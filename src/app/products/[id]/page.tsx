@@ -14,7 +14,6 @@ import {
 } from "@/app/redux/carts/cartSlice";
 import Button from "@/components/ul/Button";
 import CartDrawer from "@/components/products/CartDrawer";
-import LoadingGrid from "@/components/ul/LoadingGrid";
 import SkeletonCard from "@/components/ul/SkeletonCard";
 
 // 🧠 Type definition
@@ -25,15 +24,10 @@ const ProductPage = ({ params }: Props) => {
   const dispatch = useDispatch();
   const { id } = React.use(params);
   const { data: product, isLoading } = useGetProductByIdQuery(id);
-
-  console.log("Fetched product:", product);
-
   const [isCartOpen, setIsCartOpen] = useState(false);
   const handleOpenCart = () => setIsCartOpen(true);
   const handleCloseCart = () => setIsCartOpen(false);
-
   const cartItems = useSelector((state: RootState) => state.carts.items);
-
   const [selectedSize, setSelectedSize] = useState<string>("M");
   const [selectedColor, setSelectedColor] = useState<string>("Black");
   if (!product) {
