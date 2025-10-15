@@ -1,4 +1,4 @@
-import BannerSection from "@/components/ul/BannerSection";
+import BannerSection from "@/components/ui/BannerSection";
 import React from "react";
 import AboutContent from "./AboutContent";
 

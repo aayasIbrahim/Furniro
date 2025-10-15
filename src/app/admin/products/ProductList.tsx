@@ -4,10 +4,10 @@ import {
   useDeleteProductMutation,
   useGetProductsQuery,
 } from "@/app/redux/Api/productApi";
-import ProductManageCard from "@/components/ul/ProductMangeCard";
+import ProductManageCard from "@/components/ui/ProductMangeCard";
 import { Product } from "@/app/redux/Api/productTypes";
-import CategoryFilter from "@/components/ul/CategoryFilter";
-import Pagination from "@/components/ul/Paginataion";
+import CategoryFilter from "@/components/ui/CategoryFilter";
+import Pagination from "@/components/ui/Paginataion";
 
 interface ProductListProps {
   onEdit: (id: string) => void;
@@ -53,10 +53,10 @@ export default function ProductList({ onEdit }: ProductListProps) {
       {/* Category Filter */}
       <div className="flex justify-center">
         <CategoryFilter
-        categories={["chair", "table", "sofa", "storage"]}
-        selectedCategory={category}
-        onSelectCategory={setCategory}
-      />
+          categories={["chair", "table", "sofa", "storage"]}
+          selectedCategory={category}
+          onSelectCategory={setCategory}
+        />
       </div>
 
       {/* Product List */}

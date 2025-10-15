@@ -12,9 +12,9 @@ import {
   incrementQuantity,
   decrementQuantity,
 } from "@/app/redux/carts/cartSlice";
-import Button from "@/components/ul/Button";
+import Button from "@/components/ui/Button";
 import CartDrawer from "@/components/products/CartDrawer";
-import SkeletonCard from "@/components/ul/SkeletonCard";
+import SkeletonCard from "@/components/ui/SkeletonCard";
 
 // 🧠 Type definition
 interface Props {
@@ -33,9 +33,9 @@ const ProductPage = ({ params }: Props) => {
   if (!product) {
     return (
       <div className="container  mx-auto px-4 py-10 space-y-6 mt-[80px]">
-         <div className="">
+        <div className="">
           <SkeletonCard />
-         </div>
+        </div>
       </div>
     );
   }

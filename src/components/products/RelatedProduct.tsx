@@ -1,6 +1,6 @@
 import React from "react";
-import ProductCard from "../ul/ProductCard";
-import Button from "../ul/Button";
+import ProductCard from "../ui/ProductCard";
+import Button from "../ui/Button";
 
 function RelatedProduct() {
   const products = [

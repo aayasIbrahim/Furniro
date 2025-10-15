@@ -1,13 +1,13 @@
 "use client";
 import React, { useState, useEffect } from "react";
-import Pagination from "../ul/Paginataion";
-import ProductCard from "../ul/ProductCard";
+import Pagination from "../ui/Paginataion";
+import ProductCard from "../ui/ProductCard";
 import { useGetProductsQuery } from "@/app/redux/Api/productApi";
 import { Product } from "@/app/redux/Api/productTypes";
-import LoadingGrid from "../ul/LoadingGrid";
-import SearchBar from "../ul/SearchBar";
-import CategoryFilter from "../ul/CategoryFilter";
-import PriceFilter from "../ul/PriceFilter";
+import LoadingGrid from "../ui/LoadingGrid";
+import SearchBar from "../ui/SearchBar";
+import CategoryFilter from "../ui/CategoryFilter";
+import PriceFilter from "../ui/PriceFilter";
 
 interface PriceRange {
   label: string;

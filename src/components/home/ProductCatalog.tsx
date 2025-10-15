@@ -1,15 +1,15 @@
 "use client";
 import React from "react";
-import ProductCard from "../ul/ProductCard";
+import ProductCard from "../ui/ProductCard";
 import { useRouter } from "next/navigation";
 import { useGetProductsQuery } from "@/app/redux/Api/productApi";
-import Button from "../ul/Button";
-import LoadingGrid from "../ul/LoadingGrid";
+import Button from "../ui/Button";
+import LoadingGrid from "../ui/LoadingGrid";
 
 const ProductCatalog = () => {
   const router = useRouter();
   const limit = 8; // front-end থেকে control করা যাবে
-  const { data, isLoading } = useGetProductsQuery({limit});
+  const { data, isLoading } = useGetProductsQuery({ limit });
 
   const products = data?.products || [];
   console.log("ProductCatalog products:", products);

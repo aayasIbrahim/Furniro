@@ -1,5 +1,5 @@
 "use client";
-import Nav from "@/components/ul/Nav";
+import Nav from "@/components/ui/Nav";
 export default function NavbarClient() {
-  return <Nav/>;
+  return <Nav />;
 }
