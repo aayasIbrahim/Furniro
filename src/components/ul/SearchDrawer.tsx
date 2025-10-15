@@ -39,7 +39,7 @@ const SearchDrawer: React.FC<SearchDrawerProps> = ({
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: "-20%" }}
           transition={{ type: "spring", stiffness: 80, damping: 20 }}
-          className="fixed inset-0 z-50 flex justify-center items-start pt-20 px-4 sm:px-6 overflow-y-auto bg-black/30 backdrop-blur-sm mt-16 h-[calc(100vh-4rem)]"
+          className="fixed inset-0 z-50 flex justify-center items-start pt-20 px-4 sm:px-6 overflow-y-auto bg-black/30 backdrop-blur-sm h-[calc(100vh-4rem)]"
         >
           <div className="relative w-full max-w-5xl bg-white rounded-2xl shadow-2xl p-6 sm:p-8">
             {/* Header */}
@@ -62,28 +62,46 @@ const SearchDrawer: React.FC<SearchDrawerProps> = ({
                 placeholder="Type product name..."
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
-                className="w-full border border-gray-300 rounded-xl px-4 py-3 pr-12 focus:outline-none focus:ring-2 focus:ring-[#B88E2F] shadow-sm transition"
+                className="w-full border border-gray-300 rounded-xl px-4 py-3 pl-10 focus:outline-none focus:ring-2 focus:ring-[#B88E2F] shadow-sm transition"
               />
-              <span className="absolute right-4 top-3 text-gray-400">🔍</span>
+              {/* 🔍 Icon */}
+              <span className="absolute inset-y-0 left-3 flex items-center pointer-events-none text-gray-400">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="h-5 w-5"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                  strokeWidth={2}
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M21 21l-4.35-4.35M11 19a8 8 0 100-16 8 8 0 000 16z"
+                  />
+                </svg>
+              </span>
             </div>
 
-            {/* Products Grid */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-2 gap-6">
+            {/* Products List */}
+            <ul className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-2 gap-6">
               {filtered.length > 0 ? (
                 filtered.map((product) => (
-                  <SearchProductCard key={product._id} product={product}   />
+                  <li key={product._id}>
+                    <SearchProductCard product={product} />
+                  </li>
                 ))
               ) : query ? (
-                <p className="text-gray-500 col-span-full text-center mt-10">
+                <li className="col-span-full text-center text-gray-500 mt-10">
                   No products found for{" "}
                   <span className="font-semibold">{query}</span>
-                </p>
+                </li>
               ) : (
-                <p className="text-gray-400 col-span-full text-center mt-10">
+                <li className="col-span-full text-center text-gray-400 mt-10">
                   Type to search products
-                </p>
+                </li>
               )}
-            </div>
+            </ul>
           </div>
         </motion.div>
       )}
