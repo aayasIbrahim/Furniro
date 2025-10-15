@@ -11,7 +11,7 @@ interface SearchBarProps {
 const SearchBar: React.FC<SearchBarProps> = ({
   value,
   onChange,
-  placeholder = "Search products by name or description...",
+  placeholder = "Search products by name or Category...",
   debounceMs = 500,
 }) => {
   const [inputValue, setInputValue] = useState(value);
@@ -24,7 +24,7 @@ const SearchBar: React.FC<SearchBarProps> = ({
 
   return (
     <div className="flex justify-center mb-10 px-6">
-      <div className="relative w-full sm:w-1/2">
+      <div className="relative w-full sm:w-[500px]">
         {/* 🔍 Search Icon */}
         <span className="absolute inset-y-0 left-4 flex items-center pointer-events-none text-gray-400">
           <svg
@@ -50,8 +50,8 @@ const SearchBar: React.FC<SearchBarProps> = ({
           value={inputValue}
           onChange={(e) => setInputValue(e.target.value)}
           className="w-full pl-12 pr-10 py-3 rounded-full 
-                     bg-white dark:bg-gray-800 border border-orange-300 dark:border-gray-700
-                     text-gray-900 dark:text-gray-100 placeholder-white dark:placeholder-gray-500
+                     bg-white border border-orange-300 
+                     text-gray-900  placeholder-gray-400
                      focus:outline-none focus:ring-2 focus:ring-orange-200 focus:border-orange-400
                      shadow-md hover:shadow-lg transition-all duration-300"
         />
@@ -60,7 +60,7 @@ const SearchBar: React.FC<SearchBarProps> = ({
         {inputValue && (
           <button
             onClick={() => setInputValue("")}
-            className="absolute inset-y-0 right-4 flex items-center text-white hover:text-red-500 transition-colors"
+            className="absolute inset-y-0 right-4 flex items-center text-bold text-red-500 hover:text-red-500 transition-colors"
           >
             ✕
           </button>

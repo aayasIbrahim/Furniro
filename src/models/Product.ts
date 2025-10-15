@@ -7,10 +7,12 @@ export interface IProduct extends Document {
   oldPrice?: number;
   imageUrl: string;
   badge?: string;
+  category: "chair" | "table" | "sofa" | "storage"; 
   isFeatured: boolean;
   createdAt?: Date;
   updatedAt?: Date;
 }
+
 const ProductSchema: Schema<IProduct> = new Schema(
   {
     name: {
@@ -36,6 +38,11 @@ const ProductSchema: Schema<IProduct> = new Schema(
     badge: {
       type: String,
     },
+    category: {
+      type: String,
+      required: true,
+      enum: ["chair", "table", "sofa", "storage"], // 👈 restrict allowed values
+    },
     isFeatured: {
       type: Boolean,
       default: false,
@@ -43,6 +50,7 @@ const ProductSchema: Schema<IProduct> = new Schema(
   },
   { timestamps: true }
 );
+
 const Product =
   mongoose.models.Product || mongoose.model<IProduct>("Product", ProductSchema);
 

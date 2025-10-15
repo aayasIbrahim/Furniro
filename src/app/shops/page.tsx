@@ -7,7 +7,6 @@ export default function ShopPage() {
   return (
     <>
       <BannerSection />
-      
       <ProductGrid/>
       <FeaturesSection />
     </>

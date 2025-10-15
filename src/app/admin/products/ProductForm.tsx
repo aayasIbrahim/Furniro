@@ -7,7 +7,7 @@ import { Product } from "@/app/redux/Api/productTypes";
 import {
   useAddProductMutation,
   useUpdateProductMutation,
-  useGetProductByIdQuery, // ✅ single product fetch
+  useGetProductByIdQuery,
 } from "@/app/redux/Api/productApi";
 
 interface ProductFormProps {
@@ -17,18 +17,19 @@ interface ProductFormProps {
   onClose?: () => void;
 }
 
+const categories = ["chair", "table", "sofa", "storage"] as const;
+
 const ProductForm: React.FC<ProductFormProps> = ({
   productId,
   product,
   onSuccess,
   onClose,
 }) => {
-  // ✅ Fetch product by ID (for edit mode)
   const { data: fetchedProduct } = useGetProductByIdQuery(productId!, {
     skip: !productId,
   });
 
-  const activeProduct = product || fetchedProduct; // ✅ whichever available
+  const activeProduct = product || fetchedProduct;
   const isEditMode = Boolean(productId || product);
 
   const [formData, setFormData] = useState({
@@ -38,8 +39,10 @@ const ProductForm: React.FC<ProductFormProps> = ({
     oldPrice: "",
     imageUrl: "",
     badge: "",
+    category: "chair", // ✅ Default category
     isFeatured: false,
   });
+
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState("");
   const [loading, setLoading] = useState(false);
@@ -48,7 +51,7 @@ const ProductForm: React.FC<ProductFormProps> = ({
   const [addProduct] = useAddProductMutation();
   const [updateProduct] = useUpdateProductMutation();
 
-  // ✅ Prefill when edit mode
+  // ✅ Prefill form when editing
   useEffect(() => {
     if (isEditMode && activeProduct) {
       setFormData({
@@ -58,6 +61,7 @@ const ProductForm: React.FC<ProductFormProps> = ({
         oldPrice: activeProduct.oldPrice?.toString() || "",
         imageUrl: activeProduct.imageUrl || "",
         badge: activeProduct.badge || "",
+        category: activeProduct.category || "chair",
         isFeatured: activeProduct.isFeatured || false,
       });
       setPreviewUrl(activeProduct.imageUrl || "");
@@ -65,7 +69,7 @@ const ProductForm: React.FC<ProductFormProps> = ({
   }, [isEditMode, activeProduct]);
 
   const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
   ) => {
     const { name, value, type } = e.target;
     const val =
@@ -115,6 +119,7 @@ const ProductForm: React.FC<ProductFormProps> = ({
           oldPrice: "",
           imageUrl: "",
           badge: "",
+          category: "chair",
           isFeatured: false,
         });
         setImageFile(null);
@@ -132,7 +137,7 @@ const ProductForm: React.FC<ProductFormProps> = ({
   };
 
   return (
-    <div className="flex justify-center items-center  px-4 ">
+    <div className="flex justify-center items-center px-4">
       <form
         onSubmit={handleSubmit}
         className="w-full max-w-xl bg-white shadow-lg border border-gray-100 rounded-2xl p-8 transition-all duration-300 hover:shadow-xl"
@@ -162,6 +167,26 @@ const ProductForm: React.FC<ProductFormProps> = ({
             onChange={handleChange}
             required
           />
+
+          {/* ✅ Category Dropdown */}
+          <div>
+            <label className="block font-medium text-gray-700 mb-1">
+              Category <span className="text-red-500">*</span>
+            </label>
+            <select
+              name="category"
+              value={formData.category}
+              onChange={handleChange}
+              className="w-full border border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 rounded-lg px-4 py-2 outline-none transition-all"
+              required
+            >
+              {categories.map((cat) => (
+                <option key={cat} value={cat}>
+                  {cat.charAt(0).toUpperCase() + cat.slice(1)}
+                </option>
+              ))}
+            </select>
+          </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <InputField
@@ -202,11 +227,9 @@ const ProductForm: React.FC<ProductFormProps> = ({
                   className="object-cover rounded-lg border"
                   sizes="(max-width: 768px) 100vw, 400px"
                 />
-
-                {/* Cancel / Remove Button */}
                 <button
                   type="button"
-                  onClick={() => setPreviewUrl("")} // বা handleImageRemove()
+                  onClick={() => setPreviewUrl("")}
                   className="absolute top-2 right-2 bg-red-500 text-white px-3 py-1 rounded"
                 >
                   X
@@ -230,9 +253,7 @@ const ProductForm: React.FC<ProductFormProps> = ({
               onChange={handleChange}
               className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-[#B88E2F]"
             />
-            <label className="text-gray-700 font-medium">
-              Featured Product
-            </label>
+            <label className="text-gray-700 font-medium">Featured Product</label>
           </div>
 
           <button
@@ -262,7 +283,7 @@ const ProductForm: React.FC<ProductFormProps> = ({
   );
 };
 
-// ✅ Input Field
+// ✅ Reusable Input Field
 interface InputProps {
   label: string;
   name: string;
@@ -296,7 +317,7 @@ const InputField: React.FC<InputProps> = ({
   </div>
 );
 
-// ✅ TextArea Field
+// ✅ Reusable TextArea Field
 interface TextAreaProps {
   label: string;
   name: string;

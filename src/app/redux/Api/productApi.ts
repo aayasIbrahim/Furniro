@@ -19,23 +19,40 @@ export const productApi = createApi({
     // Get products with optional pagination and search
     getProducts: builder.query<
       GetProductResponse,
-      { page?: number; limit?: number; search?: string } | void
+      {
+        page?: number;
+        limit?: number;
+        search?: string;
+        category?: string;
+        minPrice?: number;
+        maxPrice?: number;
+      } | void
     >({
       query: (params) => {
-        const page = params?.page;
-        const limit = params?.limit ?? 8;
-        const search = params?.search?.trim() || "";
+        const query = new URLSearchParams();
 
-        // ✅ query string বানানো
-        const queryString = new URLSearchParams();
-        if (page) queryString.append("page", page.toString());
-        if (limit) queryString.append("limit", limit.toString());
-        if (search) queryString.append("search", search);
+        if (params?.page) query.append("page", params.page.toString());
+        if (params?.limit) query.append("limit", params.limit.toString());
+        if (params?.search) query.append("search", params.search.trim());
+        if (params?.category) query.append("category", params.category.trim());
+        if (params?.minPrice !== undefined)
+          query.append("minPrice", params.minPrice.toString());
+        if (params?.maxPrice !== undefined)
+          query.append("maxPrice", params.maxPrice.toString());
 
-        // ✅ endpoint path
-        return `/?${queryString.toString()}`;
+        // ✅ Only return query string, baseUrl already set in createApi
+        return `?${query.toString()}`;
       },
-      providesTags: ["Product"],
+      providesTags: (result) =>
+        result
+          ? [
+              ...result.products.map(({ _id }) => ({
+                type: "Product" as const,
+                id: _id,
+              })),
+              { type: "Product", id: "LIST" },
+            ]
+          : [{ type: "Product", id: "LIST" }],
     }),
 
     // Get a single product by ID

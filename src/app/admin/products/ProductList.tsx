@@ -6,17 +6,24 @@ import {
 } from "@/app/redux/Api/productApi";
 import ProductManageCard from "@/components/ul/ProductMangeCard";
 import { Product } from "@/app/redux/Api/productTypes";
+import CategoryFilter from "@/components/ul/CategoryFilter";
 import Pagination from "@/components/ul/Paginataion";
 
 interface ProductListProps {
-  onEdit: (id: string) => void; 
+  onEdit: (id: string) => void;
 }
 
 export default function ProductList({ onEdit }: ProductListProps) {
+  const [category, setCategory] = useState(""); // selected category
+
   const [page, setPage] = useState(1);
   const limit = 6; // items per page
 
-  const { data, isLoading, isError } = useGetProductsQuery({ page, limit });
+  const { data, isLoading, isError } = useGetProductsQuery({
+    page,
+    limit,
+    category: category || undefined, // send undefined if no category
+  });
   console.log("Fetched products:", data);
   const products = data?.products || [];
   const totalPages = data?.pagination?.totalPages || 1;
@@ -42,7 +49,15 @@ export default function ProductList({ onEdit }: ProductListProps) {
 
   return (
     <div className="max-w-6xl mx-auto space-y-10 mt-[50px]">
-      <h2 className="text-3xl font-bold text-center Black">All Products</h2>
+      <h2 className="text-3xl font-bold text-center Black">Category Product</h2>
+      {/* Category Filter */}
+      <div className="flex justify-center">
+        <CategoryFilter
+        categories={["chair", "table", "sofa", "storage"]}
+        selectedCategory={category}
+        onSelectCategory={setCategory}
+      />
+      </div>
 
       {/* Product List */}
       <div className="grid md:grid-cols-2 gap-6 py-12">

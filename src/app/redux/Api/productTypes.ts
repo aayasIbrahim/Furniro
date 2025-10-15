@@ -6,6 +6,7 @@ export interface Product {
   oldPrice?: number;
   imageUrl: string;
   badge?: string; // e.g. "-30%" or "New"
+  category: string // ✅ added category
   isFeatured: boolean;
   createdAt?: string;
   updatedAt?: string;
