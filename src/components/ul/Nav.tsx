@@ -15,7 +15,10 @@ import {
 import { useSelector } from "react-redux";
 import { RootState } from "@/app/store/store";
 import AccountDrawer from "./AccountDrawer";
+import SearchDrawer from "./SearchDrawer";
 import { useSession, signOut } from "next-auth/react";
+import { useGetProductsQuery } from "@/app/redux/Api/productApi";
+import { Product as ProductType } from "@/app/redux/Api/productTypes";
 
 // ✅ Type for each icon item
 interface IconItem {
@@ -30,6 +33,7 @@ const Nav: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [show, setShow] = useState(true);
   const [drawerOpen, setDrawerOpen] = useState(false);
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
 
   const totalQuantity = useSelector(
     (state: RootState) => state.carts.totalQuantity
@@ -37,6 +41,10 @@ const Nav: React.FC = () => {
 
   const role = session?.user?.role;
   const isAdmin = role === "admin";
+
+  // 🧩 Fetch all products for search
+  const { data: productData } = useGetProductsQuery({ limit: 1000 });
+  const products: ProductType[] = productData?.products || [];
 
   // 🔗 Navigation Links
   const links = [
@@ -47,17 +55,17 @@ const Nav: React.FC = () => {
     ...(isAdmin ? [{ name: "Admin", href: "/admin" }] : []),
   ];
 
-  // 🔘 Navbar Icons (TypeScript-safe)
+  // 🧭 Navbar Icons
   const icons: IconItem[] = [
     !isAdmin
       ? { icon: User, onClick: () => setDrawerOpen(true) }
       : { icon: LogOut, onClick: () => signOut() },
-    { icon: Search, href: "/search" },
+    { icon: Search, onClick: () => setIsSearchOpen(true) },
     { icon: Heart, href: "/wishlist" },
     { icon: ShoppingCart, href: "/cart", isCart: true },
   ];
 
-  // 🧠 Navbar hide on scroll
+  // 🧠 Hide navbar on scroll
   useEffect(() => {
     let lastScroll = 0;
     const handleScroll = () => {
@@ -71,7 +79,7 @@ const Nav: React.FC = () => {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  // 🎨 Icon Renderer — fully typed now
+  // 🎨 Render icon
   const renderIcon = (item: IconItem, index: number) => {
     const Icon = item.icon;
     const commonProps =
@@ -135,7 +143,11 @@ const Nav: React.FC = () => {
               onClick={() => setIsOpen(!isOpen)}
               className="md:hidden text-gray-700 hover:text-gray-900 focus:outline-none"
             >
-              {isOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+              {isOpen ? (
+                <X className="h-6 w-6" />
+              ) : (
+                <Menu className="h-6 w-6" />
+              )}
             </button>
           </div>
         </div>
@@ -165,9 +177,17 @@ const Nav: React.FC = () => {
         </nav>
       )}
 
+      {/* 🔐 Account Drawer */}
       {!isAdmin && (
         <AccountDrawer drawerOpen={drawerOpen} setDrawerOpen={setDrawerOpen} />
       )}
+
+      {/* 🔍 Search Drawer */}
+      <SearchDrawer
+        isOpen={isSearchOpen}
+        onClose={() => setIsSearchOpen(false)}
+        products={products}
+      />
     </header>
   );
 };

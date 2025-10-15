@@ -23,7 +23,8 @@ export async function GET(req: Request) {
     const skip = (page - 1) * limit;
 
     // 🔹 Build filters
-    const filters: any = {};
+   
+    const filters: any = {};  // eslint-disable-line @typescript-eslint/no-explicit-any
 
     if (search) {
       filters.$or = [
