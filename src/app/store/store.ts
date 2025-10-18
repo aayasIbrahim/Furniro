@@ -1,38 +1,58 @@
-"use client";
+"use client"; 
+// 🔹 Ensures this runs on the client side (important in Next.js App Router)
 
-import { configureStore } from "@reduxjs/toolkit";
-import cartReducer from "../redux/carts/cartSlice";
-import { productApi } from "../redux/Api/productApi";
-
-// --- Redux Persist ---
+import { configureStore, combineReducers } from "@reduxjs/toolkit";
 import { persistStore, persistReducer } from "redux-persist";
-import storage from "redux-persist/lib/storage"; // localStorage ব্যবহার করবে
+import storage from "redux-persist/lib/storage"; // 🔹 Uses localStorage to persist Redux state
 
-// Persist config
-const persistConfig = {
-  key: "cart",       // localStorage key
-  storage,
-  whitelist: ["items", "totalPrice"], // persist করতে চাওয়া state properties
-};
+// --- Import all slices ---
+import cartReducer from "../redux/carts/cartSlice";
+import favouriteReducer from "../redux/favourites/favouriteSlice";
+import { productApi } from "../redux/Api/productApi"; // RTK Query API slice
 
-// Persisted cart reducer
-const persistedCartReducer = persistReducer(persistConfig, cartReducer);
-
-// Configure store
-export const store = configureStore({
-  reducer: {
-    carts: persistedCartReducer,
-    [productApi.reducerPath]: productApi.reducer,
-  },
-  middleware: (getDefaultMiddleware) =>
-    getDefaultMiddleware({
-      serializableCheck: false, // redux-persist এর জন্য false করতে হবে
-    }).concat(productApi.middleware),
+// =======================
+// 🧩 Combine all reducers
+// =======================
+const rootReducer = combineReducers({
+  carts: cartReducer,               // Cart slice
+  favourites: favouriteReducer,     // Favourites slice
+  [productApi.reducerPath]: productApi.reducer, // RTK Query auto-generated reducer
 });
 
-// Persistor export
+// =======================
+// 💾 Persist Configuration
+// =======================
+const persistConfig = {
+  key: "root",          // Key for localStorage
+  storage,              // Storage engine (localStorage)
+  whitelist: ["carts", "favourites"], // Only these slices will persist after refresh
+};
+
+// =======================
+// 🔐 Create Persisted Reducer
+// =======================
+const persistedReducer = persistReducer(persistConfig, rootReducer);
+
+// =======================
+// 🏗️ Configure Redux Store
+// =======================
+export const store = configureStore({
+  reducer: persistedReducer, // Use persisted root reducer
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware({
+      serializableCheck: false, // Disable serializable check (needed for redux-persist)
+    }).concat(productApi.middleware), // Add RTK Query middleware
+});
+
+// =======================
+// 🔁 Create Persistor
+// =======================
 export const persistor = persistStore(store);
 
-// ✅ Proper TypeScript types
+// =======================
+// 🧠 TypeScript Types
+// =======================
+// RootState → entire Redux state type
 export type RootState = ReturnType<typeof store.getState>;
+// AppDispatch → used for typed dispatch in components
 export type AppDispatch = typeof store.dispatch;

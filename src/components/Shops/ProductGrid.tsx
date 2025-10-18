@@ -55,15 +55,16 @@ const ProductGrid: React.FC = () => {
   const categories = ["chair", "table", "sofa", "storage"];
 
   // 🔹 Price ranges
-  const priceRanges: PriceRange[] = [
-    { label: "All Prices", min: 0, max: Infinity },
-    { label: "Up to $5,000", min: 0, max: 5000 },
-    { label: "Price between $5,000 and $20,000", min: 5000, max: 20000 },
-    { label: "Price between $20,100 and $50,000", min: 20100, max: 50000 },
-    { label: "Price between $50,100 and $100,000", min: 50100, max: 100000 },
-    { label: "Price between $100,100 and $300,000", min: 100100, max: 300000 },
-    { label: "Above $300,100", min: 300100, max: Infinity },
-  ];
+const priceRanges: PriceRange[] = [
+  { label: "All Prices", min: 0, max: Infinity },
+  { label: "Low", min: 0, max: 5000 },
+  { label: "Affordable", min: 5000, max: 20000 },
+  { label: "Mid Range", min: 20100, max: 50000 },
+  { label: "Premium", min: 50100, max: 100000 },
+  { label: "Luxury", min: 100100, max: 300000 },
+  { label: "Ultra Luxury", min: 300100, max: Infinity },
+];
+
 
   return (
     <section className="bg-[#FAF3F0] py-12">

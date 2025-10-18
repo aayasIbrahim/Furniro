@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import Image from "next/image";
+import Link from "next/link";
 import {
   User,
   Search,
@@ -25,6 +26,7 @@ interface IconItem {
   icon: LucideIcon;
   href?: string;
   isCart?: boolean;
+  isFavourite?: boolean;
   onClick?: () => void;
 }
 
@@ -37,6 +39,9 @@ const Nav: React.FC = () => {
 
   const totalQuantity = useSelector(
     (state: RootState) => state.carts.totalQuantity
+  );
+  const favouriteCount = useSelector(
+    (state: RootState) => state.favourites.items.length
   );
 
   const role = session?.user?.role;
@@ -61,7 +66,7 @@ const Nav: React.FC = () => {
       ? { icon: User, onClick: () => setDrawerOpen(true) }
       : { icon: LogOut, onClick: () => signOut() },
     { icon: Search, onClick: () => setIsSearchOpen(true) },
-    { icon: Heart, href: "/wishlist" },
+    { icon: Heart, href: "/favourites", isFavourite: true }, // ✅ Added favourite page link
     { icon: ShoppingCart, href: "/cart", isCart: true },
   ];
 
@@ -88,17 +93,26 @@ const Nav: React.FC = () => {
     return (
       <div key={index} className="relative">
         {item.href ? (
-          <a href={item.href} className={commonProps}>
+          <Link href={item.href} className={commonProps}>
             <Icon className="h-6 w-6" />
-          </a>
+          </Link>
         ) : (
           <button onClick={item.onClick} className={commonProps}>
             <Icon className="h-6 w-6" />
           </button>
         )}
+
+        {/* 🛒 Cart badge */}
         {item.isCart && totalQuantity > 0 && (
           <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs w-5 h-5 rounded-full flex items-center justify-center font-semibold">
             {totalQuantity}
+          </span>
+        )}
+
+        {/* ❤️ Favourite badge */}
+        {item.isFavourite && favouriteCount > 0 && (
+          <span className="absolute -top-2 -right-2 bg-pink-500 text-white text-xs w-5 h-5 rounded-full flex items-center justify-center font-semibold">
+            {favouriteCount}
           </span>
         )}
       </div>
@@ -121,13 +135,13 @@ const Nav: React.FC = () => {
           {/* 🌐 Desktop Links */}
           <nav className="hidden md:flex space-x-10">
             {links.map((link) => (
-              <a
+              <Link
                 key={link.name}
                 href={link.href}
                 className="font-sans font-medium text-base text-gray-800 hover:text-gray-900 transition-colors duration-200"
               >
                 {link.name}
-              </a>
+              </Link>
             ))}
           </nav>
 
@@ -143,11 +157,7 @@ const Nav: React.FC = () => {
               onClick={() => setIsOpen(!isOpen)}
               className="md:hidden text-gray-700 hover:text-gray-900 focus:outline-none"
             >
-              {isOpen ? (
-                <X className="h-6 w-6" />
-              ) : (
-                <Menu className="h-6 w-6" />
-              )}
+              {isOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
             </button>
           </div>
         </div>
@@ -160,12 +170,12 @@ const Nav: React.FC = () => {
             <ul className="space-y-1">
               {links.map((link) => (
                 <li key={link.name}>
-                  <a
+                  <Link
                     href={link.href}
                     className="block text-gray-700 hover:text-gray-900 px-3 py-2 rounded-md text-base font-medium transition duration-150 ease-in-out"
                   >
                     {link.name}
-                  </a>
+                  </Link>
                 </li>
               ))}
             </ul>
