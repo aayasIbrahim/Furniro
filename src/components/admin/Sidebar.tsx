@@ -20,6 +20,7 @@ const navItems: NavItem[] = [
       { title: "Product List", href: "/admin/products/list" },
     ],
   },
+  { title: "Contact", href: "/admin/contact" },
   { title: "Orders", href: "/admin/orders" },
   { title: "User Manage", href: "/admin/users" },
 ];
@@ -34,8 +35,7 @@ const Sidebar = () => {
 
       <nav className="flex flex-col gap-2">
         {navItems.map(({ title, href, subItems }) => {
-          const isActive =
-            pathname === href || pathname.startsWith(`${href}/`);
+          const isActive = pathname === href || pathname.startsWith(`${href}/`);
           const isHovered = hoveredItem === href;
 
           return (
