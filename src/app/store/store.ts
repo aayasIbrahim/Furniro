@@ -10,7 +10,7 @@ import storage from "redux-persist/lib/storage"; // localStorage ব্যবহ
 
 // Persist config
 const persistConfig = {
-  key: "cart",       // localStorage key
+  key: "cart", // localStorage key
   storage,
   whitelist: ["items", "totalPrice"], // persist করতে চাওয়া state properties
 };

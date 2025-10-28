@@ -17,14 +17,14 @@ const PriceFilter: React.FC<PriceFilterProps> = ({
   onSelectRange,
   ranges = [
   { label: "All", min: 0, max: Infinity },
-  { label: "$0 - $50", min: 0, max: 50 },
-  { label: "$51 - $200", min: 51, max: 200 },
-  { label: "$201 - $500", min: 201, max: 500 },
-  { label: "$501 - $1,000", min: 501, max: 1000 },
-  { label: "$1,001 - $3,000", min: 1001, max: 3000 },
-  { label: "$3,001+", min: 3001, max: Infinity },
+  { label: "Lowest ", min: 0, max: 50 },
+  { label: "Low ", min: 51, max: 200 },
+  { label: "Medium ", min: 201, max: 500 },
+  { label: "High ", min: 501, max: 1000 },
+  { label: "Higher ", min: 1001, max: 3000 },
+  { label: "Highest ($3,001+)", min: 3001, max: Infinity },
+]
 
-  ],
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const wrapperRef = useRef<HTMLDivElement>(null);
@@ -87,21 +87,20 @@ const PriceFilter: React.FC<PriceFilterProps> = ({
       </button>
 
       {isOpen && (
-        <ul className="absolute z-10 mt-1 w-full bg-white border rounded-lg shadow-lg max-h-60 overflow-y-auto">
-          {ranges.map((range) => (
-            <li
-              key={range.label}
-              onClick={() => handleSelect(range.label === "All" ? null : range)}
-              className={`px-4 py-2 cursor-pointer hover:bg-[#B88E2F] hover:text-white ${
-                selectedRange?.label === range.label
-                  ? "bg-[#B88E2F] text-white"
-                  : ""
-              }`}
-            >
-              {range.label}
-            </li>
-          ))}
-        </ul>
+     <ul className="absolute z-10 mt-2 font-semibold w-full bg-white border border-gray-200 rounded-lg shadow-lg max-h-60 overflow-y-auto text-center divide-y divide-gray-100">
+  {ranges.map((range) => (
+    <li
+      key={range.label}
+      onClick={() => handleSelect(range.label === "All" ? null : range)}
+      className={`
+        px-4 py-3 cursor-pointer transition-colors duration-200 
+        ${selectedRange?.label === range.label ? "bg-[#B88E2F] text-white" : "hover:bg-[#B88E2F] hover:text-white"}
+      `}
+    >
+      {range.label}
+    </li>
+  ))}
+</ul>
       )}
     </div>
   );

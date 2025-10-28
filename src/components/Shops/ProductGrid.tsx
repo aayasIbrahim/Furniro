@@ -56,13 +56,13 @@ const ProductGrid: React.FC = () => {
 
   // 🔹 Price ranges
   const priceRanges: PriceRange[] = [
-    { label: "All Prices", min: 0, max: Infinity },
-    { label: "Up to $5,000", min: 0, max: 5000 },
-    { label: "Price between $5,000 and $20,000", min: 5000, max: 20000 },
-    { label: "Price between $20,100 and $50,000", min: 20100, max: 50000 },
-    { label: "Price between $50,100 and $100,000", min: 50100, max: 100000 },
-    { label: "Price between $100,100 and $300,000", min: 100100, max: 300000 },
-    { label: "Above $300,100", min: 300100, max: Infinity },
+    { label: "All", min: 0, max: Infinity },
+    { label: "Lowest Price", min: 0, max: 50 },
+    { label: "Lowest to Low Price", min: 51, max: 200 },
+    { label: "Low to Medium Price", min: 201, max: 500 },
+    { label: "Medium to High Price", min: 501, max: 1000 },
+    { label: "High to Higher Price", min: 1001, max: 3000 },
+    { label: "Highest Price", min: 3001, max: Infinity },
   ];
 
   return (

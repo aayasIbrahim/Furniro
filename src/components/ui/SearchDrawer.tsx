@@ -38,9 +38,9 @@ const SearchDrawer: React.FC<SearchDrawerProps> = ({
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: "-20%" }}
           transition={{ type: "spring", stiffness: 80, damping: 20 }}
-          className="fixed inset-0 z-50 flex justify-center items-start pt-20 px-4 sm:px-6 overflow-y-auto bg-black/30 backdrop-blur-sm h-[calc(100vh-4rem)]"
+          className="fixed inset-0 z-50 flex justify-center items-start pt-20 px-4 sm:px-6 overflow-y-auto bg-black/30 backdrop-blur-sm h-screen"
         >
-          <div className="relative w-full max-w-5xl bg-white rounded-2xl shadow-2xl p-6 sm:p-8">
+          <div className="relative w-full max-w-5xl bg-white rounded-2xl shadow-2xl p-6 sm:p-8 h-full sm:h-auto mb-10">
             {/* Header */}
             <div className="flex justify-between items-center mb-6">
               <h2 className="text-2xl font-bold text-gray-800">
