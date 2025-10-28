@@ -1,5 +1,8 @@
-"use client"
+"use client";
 import React, { useState, ChangeEvent, FormEvent, FC } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import { RootState } from "@/app/store/store"; // আপনার store path অনুযায়ী
+import { incrementQuantity, decrementQuantity, removeFromCart } from "@/app/redux/carts/cartSlice";
 
 type FormDataType = {
   firstName: string;
@@ -16,18 +19,6 @@ type FormDataType = {
   paymentMethod: "directBankTransfer" | "cashOnDelivery" | "anotherMethod";
 };
 
-type OrderItem = {
-  name: string;
-  quantity: number;
-  subtotal: number;
-};
-
-type OrderSummaryType = {
-  items: OrderItem[];
-  subtotal: number;
-  total: number;
-};
-
 type FormFieldProps = {
   label: string;
   name: keyof FormDataType;
@@ -38,6 +29,9 @@ type FormFieldProps = {
 };
 
 const CheckoutPage: FC = () => {
+  const dispatch = useDispatch();
+  const { items, totalPrice } = useSelector((state: RootState) => state.carts);
+
   const [formData, setFormData] = useState<FormDataType>({
     firstName: "",
     lastName: "",
@@ -57,23 +51,18 @@ const CheckoutPage: FC = () => {
     e: ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>
   ) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
+    setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
-    console.log("Form Submitted:", formData);
-    alert("Order Placed! (Check console for submitted data)");
+    console.log("Form Submitted:", formData, { items, totalPrice });
+    alert("Order Placed! Check console for details.");
   };
 
-  const orderSummary: OrderSummaryType = {
-    items: [{ name: "Asgaard sofa", quantity: 1, subtotal: 250000.0 }],
-    subtotal: 250000.0,
-    total: 250000.0,
-  };
+  const handleIncrement = (id: string) => dispatch(incrementQuantity(id));
+  const handleDecrement = (id: string) => dispatch(decrementQuantity(id));
+  const handleRemove = (id: string) => dispatch(removeFromCart(id));
 
   const formatPrice = (price: number) =>
     `Rs. ${price.toLocaleString("en-IN", { minimumFractionDigits: 2 })}`;
@@ -93,14 +82,8 @@ const CheckoutPage: FC = () => {
     placeholder = "",
   }) => (
     <div className="mb-6">
-      <label
-        htmlFor={name}
-        className="block text-gray-700 font-medium mb-2 text-sm"
-      >
-        {label}{" "}
-        {optional && (
-          <span className="text-gray-500 text-xs">(Optional)</span>
-        )}
+      <label htmlFor={name} className="block text-gray-700 font-medium mb-2 text-sm">
+        {label} {optional && <span className="text-gray-500 text-xs">(Optional)</span>}
       </label>
       {children ? (
         children
@@ -119,7 +102,7 @@ const CheckoutPage: FC = () => {
   );
 
   return (
-    <div className="py-12 px-4 md:px-8 lg:px-16 max-w-7xl mx-auto font-sans  mt-[100px]">
+    <div className="py-12 px-4 md:px-8 lg:px-16 max-w-7xl mx-auto font-sans mt-[100px]">
       <div className="text-center mb-10">
         <h1 className="text-4xl font-extrabold text-gray-900">Checkout</h1>
       </div>
@@ -127,9 +110,7 @@ const CheckoutPage: FC = () => {
       <form onSubmit={handleSubmit} className="flex flex-col lg:flex-row gap-12">
         {/* Left Column */}
         <div className="lg:w-3/5">
-          <h2 className="text-3xl font-bold mb-8 text-gray-800">
-            Billing details
-          </h2>
+          <h2 className="text-3xl font-bold mb-8 text-gray-800">Billing details</h2>
 
           <div className="flex flex-col sm:flex-row gap-6">
             <div className="flex-1">
@@ -140,12 +121,7 @@ const CheckoutPage: FC = () => {
             </div>
           </div>
 
-          <FormField
-            label="Company Name"
-            name="companyName"
-            optional
-            placeholder="Your Company Name"
-          />
+          <FormField label="Company Name" name="companyName" optional placeholder="Your Company Name" />
 
           <FormField label="Country / Region" name="country">
             <select
@@ -161,19 +137,11 @@ const CheckoutPage: FC = () => {
             </select>
           </FormField>
 
-          <FormField
-            label="Street Address"
-            name="streetAddress"
-            placeholder="123 Main Street"
-          />
+          <FormField label="Street Address" name="streetAddress" placeholder="123 Main Street" />
 
           <div className="flex flex-col sm:flex-row gap-6">
             <div className="flex-1">
-              <FormField
-                label="Town / City"
-                name="townCity"
-                placeholder="Colombo"
-              />
+              <FormField label="Town / City" name="townCity" placeholder="Colombo" />
             </div>
             <div className="flex-1">
               <FormField label="Province" name="province">
@@ -193,24 +161,10 @@ const CheckoutPage: FC = () => {
           </div>
 
           <FormField label="ZIP Code" name="zipCode" placeholder="00100" />
-          <FormField
-            label="Phone"
-            name="phone"
-            type="tel"
-            placeholder="+94 77 123 4567"
-          />
-          <FormField
-            label="Email address"
-            name="email"
-            type="email"
-            placeholder="example@email.com"
-          />
+          <FormField label="Phone" name="phone" type="tel" placeholder="+94 77 123 4567" />
+          <FormField label="Email address" name="email" type="email" placeholder="example@email.com" />
 
-          <FormField
-            label="Additional Information"
-            name="additionalInfo"
-            optional
-          >
+          <FormField label="Additional Information" name="additionalInfo" optional>
             <textarea
               id="additionalInfo"
               name="additionalInfo"
@@ -219,14 +173,12 @@ const CheckoutPage: FC = () => {
               rows={3}
               placeholder="Notes about your order, e.g. special delivery instructions."
               className={INPUT_CLASS}
-            ></textarea>
+            />
           </FormField>
         </div>
 
         {/* Right Column */}
-        <div
-          className={`lg:w-2/5 mt-12 lg:mt-0 p-8 rounded-xl ${BG_LIGHT} shadow-lg h-fit`}
-        >
+        <div className={`lg:w-2/5 mt-12 lg:mt-0 p-8 rounded-xl ${BG_LIGHT} shadow-lg h-fit`}>
           <h3 className="text-2xl font-bold mb-6 text-gray-800">Your Order</h3>
 
           <div className="mb-8">
@@ -235,29 +187,28 @@ const CheckoutPage: FC = () => {
               <span className="text-lg">Subtotal</span>
             </div>
 
-            {orderSummary.items.map((item, index) => (
-              <div key={index} className="flex justify-between text-gray-600 mb-2">
+            {items.map((item) => (
+              <div key={item._id} className="flex justify-between items-center text-gray-600 mb-2">
                 <span className="font-medium">
                   {item.name} x {item.quantity}
                 </span>
-                <span className="text-gray-500">
-                  {formatPrice(item.subtotal)}
-                </span>
+                <span className="text-gray-500">{formatPrice(item.price * item.quantity)}</span>
+                <div className="flex gap-2">
+                  <button type="button" onClick={() => handleIncrement(item._id)} className="px-2 bg-gray-200 rounded">+</button>
+                  <button type="button" onClick={() => handleDecrement(item._id)} className="px-2 bg-gray-200 rounded">-</button>
+                  <button type="button" onClick={() => handleRemove(item._id)} className="px-2 bg-red-200 rounded">x</button>
+                </div>
               </div>
             ))}
 
             <div className="flex justify-between pt-4 border-t border-gray-300 mt-4">
               <span className="text-lg text-gray-600">Subtotal</span>
-              <span className="text-lg text-gray-700">
-                {formatPrice(orderSummary.subtotal)}
-              </span>
+              <span className="text-lg text-gray-700">{formatPrice(totalPrice)}</span>
             </div>
 
             <div className="flex justify-between pt-2">
               <span className="text-xl font-bold">Total</span>
-              <span className={`text-2xl font-bold ${ACCENT_TEXT}`}>
-                {formatPrice(orderSummary.total)}
-              </span>
+              <span className={`text-2xl font-bold ${ACCENT_TEXT}`}>{formatPrice(totalPrice)}</span>
             </div>
           </div>
 
@@ -316,10 +267,7 @@ const CheckoutPage: FC = () => {
               Your personal data will be used to support your experience
               throughout this website, to manage access to your account, and for
               other purposes described in our{" "}
-              <a
-                href="#"
-                className={`font-semibold underline ${ACCENT_TEXT}`}
-              >
+              <a href="#" className={`font-semibold underline ${ACCENT_TEXT}`}>
                 privacy policy
               </a>
               .
