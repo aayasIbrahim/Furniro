@@ -9,9 +9,6 @@ export default function ProductListPage() {
 
   return (
     <div className="min-h-screen px-6 py-10">
-      <h1 className="text-3xl font-bold text-center mb-8 text-gray-800">
-        Product List
-      </h1>
 
       {/* ✅ Conditional Rendering for Edit */}
       {editingProductId ? (

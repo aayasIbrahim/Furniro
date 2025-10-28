@@ -9,7 +9,7 @@ import {
   useUpdateProductMutation,
   useGetProductByIdQuery,
 } from "@/app/redux/Api/productApi";
-
+  
 interface ProductFormProps {
   product?: Product;
   productId?: string;
