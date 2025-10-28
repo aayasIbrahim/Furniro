@@ -1,10 +1,10 @@
 "use client";
 import React, { useState, useEffect } from "react";
-import Pagination from "../ui/Paginataion";
-import ProductCard from "../ui/ProductCard";
+import Pagination from "@/components/ui/Paginataion";
+import ProductCard from "@/components/ui/ProductCard";
 import { useGetProductsQuery } from "@/app/redux/Api/productApi";
 import { Product } from "@/app/redux/Api/productTypes";
-import LoadingGrid from "../ui/LoadingGrid";
+import LoadingGrid from "@/components/ui/loading/LoadingGrid";
 import SearchBar from "../ui/SearchBar";
 import CategoryFilter from "../ui/CategoryFilter";
 import PriceFilter from "../ui/PriceFilter";
@@ -55,17 +55,15 @@ const ProductGrid: React.FC = () => {
   const categories = ["chair", "table", "sofa", "storage"];
 
   // 🔹 Price ranges
-const priceRanges: PriceRange[] = [
-  { label: "All Prices", min: 0, max: Infinity },
-  { label: "Low", min: 0, max: 5000 },
-  { label: "Affordable", min: 5000, max: 20000 },
-  { label: "Mid Range", min: 20100, max: 50000 },
-  { label: "Premium", min: 50100, max: 100000 },
-  { label: "Luxury", min: 100100, max: 300000 },
-  { label: "Ultra Luxury", min: 300100, max: Infinity },
-];
-
-
+  const priceRanges: PriceRange[] = [
+    { label: "All Prices", min: 0, max: Infinity },
+    { label: "Low", min: 0, max: 5000 },
+    { label: "Affordable", min: 5000, max: 20000 },
+    { label: "Mid Range", min: 20100, max: 50000 },
+    { label: "Premium", min: 50100, max: 100000 },
+    { label: "Luxury", min: 100100, max: 300000 },
+    { label: "Ultra Luxury", min: 300100, max: Infinity },
+  ];
 
   return (
     <section className="bg-[#FAF3F0] py-12">

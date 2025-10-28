@@ -4,7 +4,7 @@ import ProductCard from "../ui/ProductCard";
 import { useRouter } from "next/navigation";
 import { useGetProductsQuery } from "@/app/redux/Api/productApi";
 import Button from "../ui/Button";
-import LoadingGrid from "../ui/LoadingGrid";
+import LoadingGrid from "../ui/loading/LoadingGrid";
 
 const ProductCatalog = () => {
   const router = useRouter();

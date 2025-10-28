@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import UserLoadingSkeleton from "@/components/ui/UserLoadingSkeleton";
+import UserLoadingSkeleton from "@/components/ui/loading/UserLoadingSkeleton";
 
 // --- Type Definition ---
 interface User {

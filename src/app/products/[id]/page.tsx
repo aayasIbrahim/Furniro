@@ -14,7 +14,7 @@ import {
 } from "@/app/redux/carts/cartSlice";
 import Button from "@/components/ui/Button";
 import CartDrawer from "@/components/products/CartDrawer";
-import SkeletonCard from "@/components/ui/SkeletonCard";
+import SkeletonCard from "@/components/ui/loading/SkeletonCard";
 
 // 🧠 Type definition
 interface Props {
