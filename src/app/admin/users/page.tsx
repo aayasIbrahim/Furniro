@@ -80,9 +80,11 @@ export default function SuperAdminPage() {
       } finally {
         setLoading(false);
       }
+      
     };
     fetchUsers();
   }, []);
+  console.log(users);
 
   const changeRole = async (id: string, role: User["role"]) => {
     await fetch(`/api/users/${id}/role`, {
